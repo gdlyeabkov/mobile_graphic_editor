@@ -51,6 +51,7 @@ public class SofttrackCanvas extends View {
     public float touchY = 0f;
     public float initialTouchX = 0f;
     public float initialTouchY = 0f;
+    public ArrayList<HashMap<String, Object>> lines;
     public ArrayList<HashMap<String, Object>> curves;
     public ArrayList<HashMap<String, Object>> shapes;
     public ArrayList<HashMap<String, Object>> gradients;
@@ -71,6 +72,24 @@ public class SofttrackCanvas extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        boolean isLinesExists = lines != null;
+        if (isLinesExists) {
+            paint.setColor(Color.BLUE);
+            for (int lineIndex = 0; lineIndex < lines.size(); lineIndex++) {
+                HashMap line = lines.get(lineIndex);
+                float lineX1 = (float) line.get("x1");
+                float lineY1 = (float) line.get("y1");
+                float lineX2 = (float) line.get("x2");
+                float lineY2 = (float) line.get("y2");
+                int lineColor = (int) line.get("color");
+                int lineStrokeWidth = (int) line.get("strokeWidth");
+                Paint linePaint = new Paint();
+                linePaint.setColor(lineColor);
+                linePaint.setStrokeWidth(lineStrokeWidth);
+                canvas.drawLine(lineX1, lineY1, lineX2, lineY2, linePaint);
+            }
+        }
+
         boolean isCurvesExists = curves != null;
         if (isCurvesExists) {
             paint.setColor(Color.BLUE);
@@ -80,12 +99,10 @@ public class SofttrackCanvas extends View {
                 float curveY1 = (float) curve.get("y1");
                 float curveX2 = (float) curve.get("x2");
                 float curveY2 = (float) curve.get("y2");
-                int curveColor = (int) curve.get("color");
-                int curveStrokeWidth = (int) curve.get("strokeWidth");
                 Paint curvePaint = new Paint();
-                curvePaint.setColor(curveColor);
-                curvePaint.setStrokeWidth(curveStrokeWidth);
-                canvas.drawLine(curveX1, curveY1, curveX2, curveY2, curvePaint);
+                curvePaint.setStyle(Paint.Style.STROKE);
+                curvePaint.setColor(Color.BLACK);
+                canvas.drawRect(curveX1, curveY1, curveX2, curveY2, curvePaint);
             }
         }
 
@@ -99,6 +116,7 @@ public class SofttrackCanvas extends View {
                 float shapeX2 = (float) shape.get("x2");
                 float shapeY2 = (float) shape.get("y2");
                 Paint shapePaint = new Paint();
+                shapePaint.setStyle(Paint.Style.FILL);
                 shapePaint.setColor(Color.BLACK);
                 canvas.drawRect(shapeX1, shapeY1, shapeX2, shapeY2, shapePaint);
             }
@@ -167,9 +185,11 @@ public class SofttrackCanvas extends View {
                 paint.setColor(Color.WHITE);
                 canvas.drawLine(touchX, touchY, touchX + 10, touchY + 10, paint);
             } else if (activeTool.equalsIgnoreCase("curve")) {
-                paint.setColor(Color.WHITE);
-                canvas.drawLine(touchX, touchY, touchX + 10, touchY + 10, paint);
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setColor(Color.BLACK);
+                canvas.drawRect(initialTouchX, initialTouchY, touchX, touchY, paint);
             } else if (activeTool.equalsIgnoreCase("shape")) {
+                paint.setStyle(Paint.Style.FILL);
                 paint.setColor(Color.BLACK);
                 canvas.drawRect(initialTouchX, initialTouchY, touchX, touchY, paint);
             } else if (activeTool.equalsIgnoreCase("fill")) {
@@ -188,6 +208,7 @@ public class SofttrackCanvas extends View {
         enabledBtnColor = Color.argb(255, 255, 255, 255);
         disabledBtnColor = Color.TRANSPARENT;
         setContentDescription("pen");
+        lines = new ArrayList<HashMap<String, Object>>();
         curves = new ArrayList<HashMap<String, Object>>();
         shapes = new ArrayList<HashMap<String, Object>>();
         gradients = new ArrayList<HashMap<String, Object>>();
@@ -207,7 +228,10 @@ public class SofttrackCanvas extends View {
                     case MotionEvent.ACTION_DOWN:
                         touchX = event.getX();
                         touchY = event.getY();
-                        if (activeTool.equalsIgnoreCase("shape")) {
+                        if (activeTool.equalsIgnoreCase("curve")) {
+                            initialTouchX = touchX;
+                            initialTouchY = touchY;
+                        } else if (activeTool.equalsIgnoreCase("shape")) {
                             initialTouchX = touchX;
                             initialTouchY = touchY;
                         }
@@ -215,7 +239,17 @@ public class SofttrackCanvas extends View {
                     case MotionEvent.ACTION_UP:
                         touchX = event.getX();
                         touchY = event.getY();
-                        if (activeTool.equalsIgnoreCase("shape")) {
+                        if (activeTool.equalsIgnoreCase("curve")) {
+                            touchX = event.getX();
+                            touchY = event.getY();
+                            HashMap curve = new HashMap<String, Object>();
+                            curve.put("x1", initialTouchX);
+                            curve.put("y1", initialTouchY);
+                            curve.put("x2", touchX);
+                            curve.put("y2", touchY);
+                            curve.put("color", Color.BLACK);
+                            curves.add(curve);
+                        } else if (activeTool.equalsIgnoreCase("shape")) {
                             touchX = event.getX();
                             touchY = event.getY();
                             HashMap shape = new HashMap<String, Object>();
@@ -415,38 +449,28 @@ public class SofttrackCanvas extends View {
                         touchX = event.getX();
                         touchY = event.getY();
                         if (activeTool.equalsIgnoreCase("pen")) {
-                            HashMap curve = new HashMap<String, Object>();
-                            curve.put("x1", touchX);
-                            curve.put("y1", touchY);
-                            curve.put("x2", touchX + 10);
-                            curve.put("y2", touchY + 10);
-                            curve.put("color", Color.BLUE);
-                            curve.put("strokeWidth", 10);
-                            curves.add(curve);
+                            HashMap line = new HashMap<String, Object>();
+                            line.put("x1", touchX);
+                            line.put("y1", touchY);
+                            line.put("x2", touchX + 10);
+                            line.put("y2", touchY + 10);
+                            line.put("color", Color.BLUE);
+                            line.put("strokeWidth", 10);
+                            lines.add(line);
                             invalidate();
                         } else if (activeTool.equalsIgnoreCase("eraser")) {
                             touchX = event.getX();
                             touchY = event.getY();
-                            HashMap curve = new HashMap<String, Object>();
-                            curve.put("x1", touchX);
-                            curve.put("y1", touchY);
-                            curve.put("x2", touchX + 10);
-                            curve.put("y2", touchY + 10);
-                            curve.put("color", Color.WHITE);
-                            curve.put("strokeWidth", 50);
-                            curves.add(curve);
+                            HashMap line = new HashMap<String, Object>();
+                            line.put("x1", touchX);
+                            line.put("y1", touchY);
+                            line.put("x2", touchX + 10);
+                            line.put("y2", touchY + 10);
+                            line.put("color", Color.WHITE);
+                            line.put("strokeWidth", 50);
+                            lines.add(line);
                             invalidate();
                         } else if (activeTool.equalsIgnoreCase("curve")) {
-                            touchX = event.getX();
-                            touchY = event.getY();
-                            HashMap curve = new HashMap<String, Object>();
-                            curve.put("x1", touchX);
-                            curve.put("y1", touchY);
-                            curve.put("x2", touchX + 10);
-                            curve.put("y2", touchY + 10);
-                            curve.put("color", Color.WHITE);
-                            curve.put("strokeWidth", 50);
-                            curves.add(curve);
                             invalidate();
                         } else if (activeTool.equalsIgnoreCase("shape")) {
                             invalidate();
@@ -465,14 +489,14 @@ public class SofttrackCanvas extends View {
                         } else if (activeTool.equalsIgnoreCase("gradient")) {
                             touchX = event.getX();
                             touchY = event.getY();
-                            HashMap curve = new HashMap<String, Object>();
-                            curve.put("x1", touchX);
-                            curve.put("y1", touchY);
-                            curve.put("x2", touchX + 10);
-                            curve.put("y2", touchY + 10);
-                            curve.put("color", Color.WHITE);
-                            curve.put("strokeWidth", 50);
-                            curves.add(curve);
+                            HashMap line = new HashMap<String, Object>();
+                            line.put("x1", touchX);
+                            line.put("y1", touchY);
+                            line.put("x2", touchX + 10);
+                            line.put("y2", touchY + 10);
+                            line.put("color", Color.WHITE);
+                            line.put("strokeWidth", 50);
+                            lines.add(line);
                             invalidate();
                         } else if (activeTool.equalsIgnoreCase("text")) {
 
