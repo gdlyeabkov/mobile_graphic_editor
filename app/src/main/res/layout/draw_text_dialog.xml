@@ -1,16 +1,361 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/draw_text_dialog_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="25dp">
 
-    <EditText
-        android:id="@+id/draw_text_dialog_container_content_field"
+    <TextView
+        android:id="@+id/draw_text_dialog_container_content_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        tools:ignore="SpeakableTextPresentCheck" />
+        android:text="Текст" />
+
+    <LinearLayout
+        android:id="@+id/draw_text_dialog_container_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="false"
+        android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="250dp"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/draw_text_dialog_container_content_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textMultiLine|textPersonName"
+                android:scrollbars="vertical"
+                android:singleLine="false"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_content_mic"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/draw_text_dialog_container_content_mic_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/mic"
+                tools:ignore="SpeakableTextPresentCheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_content_keyboard"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:clickable="false"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/draw_text_dialog_container_content_keyboard_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/keyboard"
+                tools:ignore="SpeakableTextPresentCheck" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/draw_text_dialog_container_font_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Шрифт" />
+
+    <Spinner
+        android:id="@+id/draw_text_dialog_container_font_family"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <LinearLayout
+        android:id="@+id/draw_text_dialog_container_font_decoration"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_font_decoration_align_left"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/align_left"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_font_decoration_align_center"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/align_center"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_font_decoration_align_right"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/align_right"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_font_decoration_bold"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/draw_text_dialog_container_font_decoration_bold_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/bold"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_font_decoration_italic"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/draw_text_dialog_container_font_decoration_italic_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/italic"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_font_decoration_vertical"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/text_direction_right"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/draw_text_dialog_container_font_smooth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Сглаживание" />
+
+    <TextView
+        android:id="@+id/draw_text_dialog_container_font_size_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Размер текста 18 pt" />
+
+    <SeekBar
+        android:id="@+id/draw_text_dialog_container_font_size_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/draw_text_dialog_container_font_space_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Текстовое пространство 0" />
+
+    <SeekBar
+        android:id="@+id/draw_text_dialog_container_font_space_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/draw_text_dialog_container_line_height_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Межстрочный интервал" />
+
+    <SeekBar
+        android:id="@+id/draw_text_dialog_container_line_height_slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/draw_text_dialog_container_rotation_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Градус поворота" />
+
+    <LinearLayout
+        android:id="@+id/draw_text_dialog_container_rotation"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/draw_text_dialog_container_rotation_field"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="0"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_rotation_horizontal"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/text_direction_horizontal"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_rotation_right"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/text_direction_right"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_rotation_under"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/text_direction_horizontal"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_rotation_left"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/imageButton4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:scaleType="fitStart"
+                app:srcCompat="@drawable/text_direction_left"
+                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/draw_text_dialog_container_outline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_outline_color"
+            android:layout_width="175dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/draw_text_dialog_container_outline_color_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Цвет края" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/draw_text_dialog_container_outline_width"
+            android:layout_width="175dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/draw_text_dialog_container_outline_width_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ширина края 0 px" />
+
+            <SeekBar
+                android:id="@+id/draw_text_dialog_container_outline_width_slider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <CheckBox
+                android:id="@+id/draw_text_dialog_container_outline_width_smooth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Круглые края" />
+        </LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>
