@@ -91,6 +91,13 @@
         android:layout_height="35dp"
         android:orientation="horizontal">
 
+        <ImageButton
+            android:id="@+id/draw_text_dialog_container_font_decoration_color_btn"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:srcCompat="@drawable/shape"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
         <LinearLayout
             android:id="@+id/draw_text_dialog_container_font_decoration_align_left"
             android:layout_width="35dp"
@@ -330,6 +337,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Цвет края" />
+
+            <ImageButton
+                android:id="@+id/draw_text_dialog_container_outline_color_btn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                app:srcCompat="@drawable/shape"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
         </LinearLayout>
 
         <LinearLayout

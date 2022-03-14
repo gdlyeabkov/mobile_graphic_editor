@@ -1,152 +1,441 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main_container"
+    android:id="@+id/activity_main_drawer"
+    layout_width="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <HorizontalScrollView
-        android:id="@+id/activity_main_container_toolbar"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main_container"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpeakableTextPresentCheck">
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
 
-        <LinearLayout
-            android:id="@+id/activity_main_container_toolbar_body"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+        <HorizontalScrollView
+            android:id="@+id/activity_main_container_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpeakableTextPresentCheck">
 
             <LinearLayout
-                android:id="@+id/activity_main_container_toolbar_body_pen"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="15dp"
+                android:id="@+id/activity_main_container_toolbar_body"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/activity_main_container_toolbar_body_pen"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/pen" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_container_toolbar_body_eraser"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/eraser" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_container_toolbar_body_curve"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/curve" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_container_toolbar_body_shape"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/shape" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_container_toolbar_body_fill"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/fill" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_container_toolbar_body_gradient"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/gradient" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_container_toolbar_body_text"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/text" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:id="@+id/activity_main_container_canvas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="100dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_main_container_toolbar"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/activity_main_container_pre_footer"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/activity_main_container_footer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_main_container_canvas"
+            app:layout_constraintVertical_bias="0.86">
+
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/imageView16"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/undo" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView17"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/redo" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView18"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/pipet" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView19"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     app:srcCompat="@drawable/pen" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/activity_main_container_toolbar_body_eraser"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="15dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/imageView20"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/eraser" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/activity_main_container_toolbar_body_curve"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="15dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/imageView21"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/curve" />
+                    app:srcCompat="@drawable/zoom" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button3"
+                android:layout_width="65dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Save" />
+
+            <LinearLayout
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView22"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/apps" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/activity_main_container_footer"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_main_container_canvas"
+            app:layout_constraintVertical_bias="0.93">
+
+            <LinearLayout
+                android:id="@+id/activity_main_container_footer_burger"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/burger" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/activity_main_container_toolbar_body_shape"
+                android:id="@+id/activity_main_container_footer_edit"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView4"
+                    android:id="@+id/imageView9"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/shape" />
+                    app:srcCompat="@drawable/edit" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/activity_main_container_toolbar_body_fill"
+                android:id="@+id/activity_main_container_footer_selection"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView5"
+                    android:id="@+id/imageView10"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/fill" />
+                    app:srcCompat="@drawable/selection" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/activity_main_container_toolbar_body_gradient"
+                android:id="@+id/activity_main_container_footer_toggle_orientation"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView6"
+                    android:id="@+id/imageView11"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/gradient" />
+                    app:srcCompat="@drawable/toggle_orientation" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/activity_main_container_toolbar_body_text"
+                android:id="@+id/activity_main_container_footer_tool"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imageView7"
+                    android:id="@+id/activity_main_container_footer_tool_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/text" />
+                    app:srcCompat="@drawable/selection" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_main_container_footer_palete"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/palete" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_main_container_footer_layers"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/activity_main_container_footer_layers_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/layer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/activity_main_container_footer_materials"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView15"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/material" />
             </LinearLayout>
 
         </LinearLayout>
-    </HorizontalScrollView>
 
-    <LinearLayout
-        android:id="@+id/activity_main_container_canvas"
-        android:layout_width="match_parent"
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/activity_main_palete"
+        android:layout_width="250dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_main_container_toolbar"></LinearLayout>
+        android:layout_gravity="left"
+        android:padding="25dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.skydoves.colorpickerview.ColorPickerView
+            android:id="@+id/activity_main_palete_color"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            app:initialColor="#000000">
+
+        </com.skydoves.colorpickerview.ColorPickerView>
+
+        <TextView
+            android:id="@+id/textView26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="palete" />
+    </com.google.android.material.navigation.NavigationView>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/activity_main_layers"
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:padding="25dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="layers" />
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>

@@ -30,14 +30,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-//import androidx.window.layout.WindowMetricsCalculator;
-//import androidx.window.testing.layout.FoldingFeature;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.utils.widget.MockView;
 import androidx.window.layout.WindowMetricsCalculator;
 import androidx.window.testing.layout.WindowLayoutInfoPublisherRule;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.skydoves.colorpickerview.ColorEnvelope;
+import com.skydoves.colorpickerview.ColorPickerDialog;
+import com.skydoves.colorpickerview.ColorPickerView;
+import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener;
 
 import java.time.format.TextStyle;
 import java.util.ArrayList;
@@ -54,12 +56,17 @@ public class SofttrackCanvas extends View {
     public ArrayList<HashMap<String, Object>> lines;
     public ArrayList<HashMap<String, Object>> curves;
     public ArrayList<HashMap<String, Object>> shapes;
+    public ArrayList<HashMap<String, Object>> fills;
     public ArrayList<HashMap<String, Object>> gradients;
     public ArrayList<HashMap<String, Object>> texts;
     public boolean isBold = false;
     public boolean isItalic = false;
     public int enabledBtnColor;
     public int disabledBtnColor;
+    public int fillColor;
+    public int fillTextColor;
+    public int outlineTextColor;
+
 
     public SofttrackCanvas(Context context) {
         super(context);
@@ -74,7 +81,10 @@ public class SofttrackCanvas extends View {
 
         boolean isLinesExists = lines != null;
         if (isLinesExists) {
-            paint.setColor(Color.BLUE);
+            ColorPickerView activityMainPaleteColor = MainActivity.gateway.findViewById(R.id.activity_main_palete_color);
+            int activeColor = activityMainPaleteColor.getColor();
+//            paint.setColor(Color.BLUE);
+            paint.setColor(activeColor);
             for (int lineIndex = 0; lineIndex < lines.size(); lineIndex++) {
                 HashMap line = lines.get(lineIndex);
                 float lineX1 = (float) line.get("x1");
@@ -122,6 +132,18 @@ public class SofttrackCanvas extends View {
             }
         }
 
+        boolean isFillsExists = fills != null;
+        if (isFillsExists) {
+            paint.setColor(Color.BLUE);
+            for (int fillIndex = 0; fillIndex < fills.size(); fillIndex++) {
+                HashMap fill = fills.get(fillIndex);
+                int fillColor = (int) fill.get("color");
+                Paint fillPaint = new Paint();
+                fillPaint.setColor(fillColor);
+                canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), fillPaint);
+            }
+        }
+
         boolean isGradientsExists = gradients != null;
         if (isGradientsExists) {
             paint.setColor(Color.BLUE);
@@ -149,6 +171,8 @@ public class SofttrackCanvas extends View {
                 boolean isTextItalic = (boolean) text.get("isTextItalic");
                 boolean isTextSmooth = (boolean) text.get("isTextSmooth");
                 int textOutlineWidth = (int) text.get("textOutlineWidth");
+                int textFillColor = (int) text.get("fillTextColor");
+                int textOutlineColor = (int) text.get("outlineTextColor");
                 // boolean isFontFamily = (boolean) text.get("isFontFamily");
                 Paint textPaint = new Paint();
                 textPaint.setColor(Color.BLACK);
@@ -166,6 +190,9 @@ public class SofttrackCanvas extends View {
                     if (isTextOutlineSmooth) {
                         textPaint.setStrokeCap(Paint.Cap.ROUND);
                     }
+                    textPaint.setColor(textOutlineColor);
+                } else {
+                    textPaint.setColor(textFillColor);
                 }
                 /*if (isFontFamily) {
                     Typeface.defaultFromStyle(Typeface.ITALIC);
@@ -207,10 +234,14 @@ public class SofttrackCanvas extends View {
     public void initialize(MainActivity context) {
         enabledBtnColor = Color.argb(255, 255, 255, 255);
         disabledBtnColor = Color.TRANSPARENT;
+        fillColor = Color.BLACK;
+        fillTextColor = Color.BLACK;
+        outlineTextColor = Color.BLACK;
         setContentDescription("pen");
         lines = new ArrayList<HashMap<String, Object>>();
         curves = new ArrayList<HashMap<String, Object>>();
         shapes = new ArrayList<HashMap<String, Object>>();
+        fills = new ArrayList<HashMap<String, Object>>();
         gradients = new ArrayList<HashMap<String, Object>>();
         texts = new ArrayList<HashMap<String, Object>>();
         paint = new Paint();
@@ -259,12 +290,18 @@ public class SofttrackCanvas extends View {
                             shape.put("y2", touchY);
                             shape.put("color", Color.BLACK);
                             shapes.add(shape);
+                        }  else if (activeTool.equalsIgnoreCase("fill")) {
+                            HashMap fill = new HashMap<String, Object>();
+                            fill.put("color", Color.BLACK);
+                            fills.add(fill);
                         } else if (activeTool.equalsIgnoreCase("gradient")) {
                             touchX = event.getX();
                             touchY = event.getY();
                             HashMap gradient = new HashMap<String, Object>();
                             gradients.add(gradient);
                         } else if (activeTool.equalsIgnoreCase("text")) {
+                            fillTextColor = Color.BLACK;
+                            outlineTextColor = Color.BLACK;
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                             LayoutInflater inflater = finalContext.getLayoutInflater();
                             View dialogView = inflater.inflate(R.layout.draw_text_dialog, null);
@@ -273,6 +310,7 @@ public class SofttrackCanvas extends View {
                             ImageButton drawTextDialogContainerContentMicBtn = dialogView.findViewById(R.id.draw_text_dialog_container_content_mic_btn);
                             ImageButton drawTextDialogContainerContentKeyboardBtn = dialogView.findViewById(R.id.draw_text_dialog_container_content_keyboard_btn);
                             Spinner drawTextDialogContainerFontFamily = dialogView.findViewById(R.id.draw_text_dialog_container_font_family);
+                            ImageButton drawTextDialogContainerFontDecorationColorBtn = dialogView.findViewById(R.id.draw_text_dialog_container_font_decoration_color_btn);
                             ImageButton drawTextDialogContainerFontDecorationBoldBtn = dialogView.findViewById(R.id.draw_text_dialog_container_font_decoration_bold_btn);
                             ImageButton drawTextDialogContainerFontDecorationItalicBtn = dialogView.findViewById(R.id.draw_text_dialog_container_font_decoration_italic_btn);
                             CheckBox drawTextDialogContainerFontSmooth = dialogView.findViewById(R.id.draw_text_dialog_container_font_smooth);
@@ -282,6 +320,7 @@ public class SofttrackCanvas extends View {
                             SeekBar drawTextDialogContainerFontSpaceSlider = dialogView.findViewById(R.id.draw_text_dialog_container_font_space_slider);
                             TextView drawTextDialogContainerLineHeightLabel = dialogView.findViewById(R.id.draw_text_dialog_container_line_height_label);
                             SeekBar drawTextDialogContainerLineHeightSlider = dialogView.findViewById(R.id.draw_text_dialog_container_line_height_slider);
+                            ImageButton drawTextDialogContainerOutlineColorBtn = dialogView.findViewById(R.id.draw_text_dialog_container_outline_color_btn);
                             TextView drawTextDialogContainerOutlineWidthLabel = dialogView.findViewById(R.id.draw_text_dialog_container_outline_width_label);
                             SeekBar drawTextDialogContainerOutlineWidthSlider = dialogView.findViewById(R.id.draw_text_dialog_container_outline_width_slider);
                             CheckBox drawTextDialogContainerOutlineWidthSmooth = dialogView.findViewById(R.id.draw_text_dialog_container_outline_width_smooth);
@@ -311,6 +350,8 @@ public class SofttrackCanvas extends View {
                                     text.put("textOutlineWidth", drawTextDialogContainerOutlineWidthSlider.getProgress());
                                     // text.put("isFontFamily", false);
                                     text.put("isTextOutlineSmooth", isTextOutlineSmooth);
+                                    text.put("fillTextColor", fillTextColor);
+                                    text.put("outlineTextColor", outlineTextColor);
                                     texts.add(text);
                                     invalidate();
                                 }
@@ -341,6 +382,32 @@ public class SofttrackCanvas extends View {
                                             R.array.fonts, android.R.layout.simple_spinner_item);
                                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
                                     drawTextDialogContainerFontFamily.setAdapter(adapter);
+                                    drawTextDialogContainerFontDecorationColorBtn.setOnClickListener(new OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            new ColorPickerDialog.Builder(getContext())
+                                                .setPreferenceName("MyColorPickerDialog")
+                                                .setPositiveButton("ОК",
+                                                        new ColorEnvelopeListener() {
+                                                            @Override
+                                                            public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
+                                                                fillTextColor = envelope.getColor();
+                                                            }
+                                                        })
+                                                .setNegativeButton("Отмена",
+                                                        new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                                dialogInterface.dismiss();
+                                                            }
+                                                        })
+                                                .attachAlphaSlideBar(true) // the default value is true.
+                                                .attachBrightnessSlideBar(true)  // the default value is true.
+                                                .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
+                                                .show();
+                                        }
+
+                                    });
                                     drawTextDialogContainerFontDecorationBoldBtn.setOnClickListener(new OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
@@ -420,6 +487,32 @@ public class SofttrackCanvas extends View {
 
                                         }
                                     });
+                                    drawTextDialogContainerOutlineColorBtn.setOnClickListener(new OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            new ColorPickerDialog.Builder(getContext())
+                                                .setPreferenceName("MyColorPickerDialog")
+                                                .setPositiveButton("ОК",
+                                                    new ColorEnvelopeListener() {
+                                                        @Override
+                                                        public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
+                                                            outlineTextColor = envelope.getColor();
+                                                        }
+                                                    })
+                                                .setNegativeButton("Отмена",
+                                                    new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            dialogInterface.dismiss();
+                                                        }
+                                                    })
+                                                .attachAlphaSlideBar(true) // the default value is true.
+                                                .attachBrightnessSlideBar(true)  // the default value is true.
+                                                .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
+                                                .show();
+
+                                        }
+                                    });
                                     drawTextDialogContainerOutlineWidthSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                                         @Override
                                         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -454,7 +547,8 @@ public class SofttrackCanvas extends View {
                             line.put("y1", touchY);
                             line.put("x2", touchX + 10);
                             line.put("y2", touchY + 10);
-                            line.put("color", Color.BLUE);
+                            ColorPickerView activityMainPaleteColor = MainActivity.gateway.findViewById(R.id.activity_main_palete_color);
+                            line.put("color", activityMainPaleteColor.getColor());
                             line.put("strokeWidth", 10);
                             lines.add(line);
                             invalidate();
@@ -467,6 +561,7 @@ public class SofttrackCanvas extends View {
                             line.put("x2", touchX + 10);
                             line.put("y2", touchY + 10);
                             line.put("color", Color.WHITE);
+//                            line.put("color", MainActivity.gateway.fillColor);
                             line.put("strokeWidth", 50);
                             lines.add(line);
                             invalidate();
@@ -475,28 +570,18 @@ public class SofttrackCanvas extends View {
                         } else if (activeTool.equalsIgnoreCase("shape")) {
                             invalidate();
                         } else if (activeTool.equalsIgnoreCase("fill")) {
-                            touchX = event.getX();
-                            touchY = event.getY();
-                            HashMap curve = new HashMap<String, Object>();
-                            curve.put("x1", touchX);
-                            curve.put("y1", touchY);
-                            curve.put("x2", touchX + 10);
-                            curve.put("y2", touchY + 10);
-                            curve.put("color", Color.WHITE);
-                            curve.put("strokeWidth", 50);
-                            curves.add(curve);
                             invalidate();
                         } else if (activeTool.equalsIgnoreCase("gradient")) {
-                            touchX = event.getX();
-                            touchY = event.getY();
-                            HashMap line = new HashMap<String, Object>();
-                            line.put("x1", touchX);
-                            line.put("y1", touchY);
-                            line.put("x2", touchX + 10);
-                            line.put("y2", touchY + 10);
-                            line.put("color", Color.WHITE);
-                            line.put("strokeWidth", 50);
-                            lines.add(line);
+//                            touchX = event.getX();
+//                            touchY = event.getY();
+//                            HashMap line = new HashMap<String, Object>();
+//                            line.put("x1", touchX);
+//                            line.put("y1", touchY);
+//                            line.put("x2", touchX + 10);
+//                            line.put("y2", touchY + 10);
+//                            line.put("color", Color.WHITE);
+//                            line.put("strokeWidth", 50);
+//                            lines.add(line);
                             invalidate();
                         } else if (activeTool.equalsIgnoreCase("text")) {
 
