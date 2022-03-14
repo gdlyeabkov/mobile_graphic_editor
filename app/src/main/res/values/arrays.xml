@@ -5,4 +5,8 @@
         <item>Serif</item>
         <item>Monospace</item>
     </string-array>
+    <string-array name="size_measures">
+        <item>px</item>
+        <item>cm</item>
+    </string-array>
 </resources>

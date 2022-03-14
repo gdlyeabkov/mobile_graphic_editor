@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Shader;
 import android.graphics.Typeface;
@@ -15,6 +16,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,7 +68,8 @@ public class SofttrackCanvas extends View {
     public int fillColor;
     public int fillTextColor;
     public int outlineTextColor;
-
+    public ArrayList<Float> initialCurvePoints = new ArrayList<Float>();
+    public GestureDetector gestureDetector;
 
     public SofttrackCanvas(Context context) {
         super(context);
@@ -78,6 +81,8 @@ public class SofttrackCanvas extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        // для вращения канваса
+        //        canvas.rotate(15);
 
         boolean isLinesExists = lines != null;
         if (isLinesExists) {
@@ -105,14 +110,33 @@ public class SofttrackCanvas extends View {
             paint.setColor(Color.BLUE);
             for (int curveIndex = 0; curveIndex < curves.size(); curveIndex++) {
                 HashMap curve = curves.get(curveIndex);
-                float curveX1 = (float) curve.get("x1");
-                float curveY1 = (float) curve.get("y1");
-                float curveX2 = (float) curve.get("x2");
-                float curveY2 = (float) curve.get("y2");
+                String curveType = (String) curve.get("type");
                 Paint curvePaint = new Paint();
                 curvePaint.setStyle(Paint.Style.STROKE);
                 curvePaint.setColor(Color.BLACK);
-                canvas.drawRect(curveX1, curveY1, curveX2, curveY2, curvePaint);
+                if (curveType == "line") {
+                    float curveX1 = (float) curve.get("x1");
+                    float curveY1 = (float) curve.get("y1");
+                    float curveX2 = (float) curve.get("x2");
+                    float curveY2 = (float) curve.get("y2");
+                    canvas.drawLine(curveX1, curveY1, curveX2, curveY2, curvePaint);
+                } else if (curveType == "path") {
+                    float[] curvePoints = (float[]) curve.get("points");
+                    curvePaint.setStrokeWidth(10);
+                    canvas.drawLines(curvePoints, curvePaint);
+                } else if (curveType == "rect") {
+                    float curveX1 = (float) curve.get("x1");
+                    float curveY1 = (float) curve.get("y1");
+                    float curveX2 = (float) curve.get("x2");
+                    float curveY2 = (float) curve.get("y2");
+                    canvas.drawRect(curveX1, curveY1, curveX2, curveY2, curvePaint);
+                } else if (curveType == "oval") {
+                    float curveX1 = (float) curve.get("x1");
+                    float curveY1 = (float) curve.get("y1");
+                    float curveX2 = (float) curve.get("x2");
+                    float curveY2 = (float) curve.get("y2");
+                    canvas.drawOval(curveX1, curveY1, curveX2, curveY2, curvePaint);
+                }
             }
         }
 
@@ -206,7 +230,7 @@ public class SofttrackCanvas extends View {
             rawActiveTool = contentDescription;
             String activeTool = rawActiveTool.toString();
             if (activeTool.equalsIgnoreCase("pen")) {
-                paint.setColor(Color.BLUE);
+                paint.setColor(MainActivity.gateway.fillColor);
                 canvas.drawLine(touchX, touchY, touchX + 10, touchY + 10, paint);
             } else if (activeTool.equalsIgnoreCase("eraser")) {
                 paint.setColor(Color.WHITE);
@@ -214,7 +238,23 @@ public class SofttrackCanvas extends View {
             } else if (activeTool.equalsIgnoreCase("curve")) {
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setColor(Color.BLACK);
-                canvas.drawRect(initialTouchX, initialTouchY, touchX, touchY, paint);
+                if (MainActivity.gateway.activeToolbarMenuItem == "line") {
+                    canvas.drawLine(initialTouchX, initialTouchY, touchX, touchY, paint);
+                } else if (MainActivity.gateway.activeToolbarMenuItem == "path") {
+                    float[] localCurvePoints = new float[initialCurvePoints.size()];
+                    int i = 0;
+                    if (initialCurvePoints.size() >= 1) {
+                        for (Float initialCurvePoint : initialCurvePoints) {
+                            float localCurvePoint = initialCurvePoint.floatValue();
+                            localCurvePoints[i++] = localCurvePoint;
+                        }
+                    }
+                    canvas.drawLines(localCurvePoints, paint);
+                } else if (MainActivity.gateway.activeToolbarMenuItem == "rect") {
+                    canvas.drawRect(initialTouchX, initialTouchY, touchX, touchY, paint);
+                } else if (MainActivity.gateway.activeToolbarMenuItem == "oval") {
+                    canvas.drawOval(initialTouchX, initialTouchY, touchX, touchY, paint);
+                }
             } else if (activeTool.equalsIgnoreCase("shape")) {
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(Color.BLACK);
@@ -262,6 +302,12 @@ public class SofttrackCanvas extends View {
                         if (activeTool.equalsIgnoreCase("curve")) {
                             initialTouchX = touchX;
                             initialTouchY = touchY;
+                            if (MainActivity.gateway.activeToolbarMenuItem == "path") {
+                                initialCurvePoints.add(initialTouchX);
+                                initialCurvePoints.add(initialTouchY);
+//                                initialCurvePoints.add(initialTouchX);
+//                                initialCurvePoints.add(initialTouchY);
+                            }
                         } else if (activeTool.equalsIgnoreCase("shape")) {
                             initialTouchX = touchX;
                             initialTouchY = touchY;
@@ -274,11 +320,28 @@ public class SofttrackCanvas extends View {
                             touchX = event.getX();
                             touchY = event.getY();
                             HashMap curve = new HashMap<String, Object>();
-                            curve.put("x1", initialTouchX);
-                            curve.put("y1", initialTouchY);
-                            curve.put("x2", touchX);
-                            curve.put("y2", touchY);
                             curve.put("color", Color.BLACK);
+                            if (MainActivity.gateway.activeToolbarMenuItem.equalsIgnoreCase("path")) {
+                                float[] localCurvePoints = new float[initialCurvePoints.size()];
+                                int i = 0;
+                                if (initialCurvePoints.size() >= 1) {
+                                    for (Float initialCurvePoint : initialCurvePoints) {
+                                        float localCurvePoint = initialCurvePoint.floatValue();
+                                        localCurvePoints[i++] = localCurvePoint;
+                                    }
+                                }
+                                curve.put("points", localCurvePoints);
+                                if (initialCurvePoints .size() >= 3) {
+                                    initialCurvePoints.clear();
+                                }
+                            } else {
+                                curve.put("x1", initialTouchX);
+                                curve.put("y1", initialTouchY);
+                                curve.put("x2", touchX);
+                                curve.put("y2", touchY);
+
+                            }
+                            curve.put("type", MainActivity.gateway.activeToolbarMenuItem);
                             curves.add(curve);
                         } else if (activeTool.equalsIgnoreCase("shape")) {
                             touchX = event.getX();

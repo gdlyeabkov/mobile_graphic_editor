@@ -4,6 +4,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     public DrawerLayout activityMainDrawer;
     public HorizontalScrollView activityMainContainerToolbar;
+    public ViewPager2 activityMainContainerToolbarMenu;
     public LinearLayout activityMainContainerCanvas;
     public LinearLayout activityMainContainerToolbarBodyPen;
     public LinearLayout activityMainContainerToolbarBodyEraser;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public int visible;
     public int unvisible;
     public int fillColor;
+    public String activeToolbarMenuItem = "line";
     public static MainActivity gateway;
 
     @Override
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     public void initialize() {
         initializeConstants();
         findViews();
+        initializeToolbarMenu();
         initializeCanvas();
         initializeActionBar();
         addHandlers();
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     public void findViews() {
         activityMainDrawer = findViewById(R.id.activity_main_drawer);
         activityMainContainerToolbar = findViewById(R.id.activity_main_container_toolbar);
+        activityMainContainerToolbarMenu = findViewById(R.id.activity_main_container_toolbar_menu);
         activityMainContainerToolbarBodyPen = findViewById(R.id.activity_main_container_toolbar_body_pen);
         activityMainContainerToolbarBodyEraser = findViewById(R.id.activity_main_container_toolbar_body_eraser);
         activityMainContainerToolbarBodyCurve = findViewById(R.id.activity_main_container_toolbar_body_curve);
@@ -89,6 +95,12 @@ public class MainActivity extends AppCompatActivity {
         activityMainContainerFooterMaterials = findViewById(R.id.activity_main_container_footer_materials);
     }
 
+    public void initializeToolbarMenu() {
+        FragmentManager fm = getSupportFragmentManager();
+        ViewStateAdapter sa = new ViewStateAdapter(fm, getLifecycle());
+        activityMainContainerToolbarMenu.setAdapter(sa);
+    }
+
     public void initializeCanvas() {
         canvas = new SofttrackCanvas(MainActivity.this);
         canvas.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -106,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 canvas.setContentDescription("pen");
                 activityMainContainerFooterToolBtn.setImageResource(R.drawable.pen);
+                activityMainContainerToolbarMenu.setCurrentItem(0);
             }
         });
         activityMainContainerToolbarBodyEraser.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 canvas.setContentDescription("eraser");
                 activityMainContainerFooterToolBtn.setImageResource(R.drawable.eraser);
+                activityMainContainerToolbarMenu.setCurrentItem(0);
             }
         });
         activityMainContainerToolbarBodyCurve.setOnClickListener(new View.OnClickListener() {
@@ -120,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 canvas.setContentDescription("curve");
                 activityMainContainerFooterToolBtn.setImageResource(R.drawable.curve);
+                activityMainContainerToolbarMenu.setCurrentItem(1);
             }
         });
         activityMainContainerToolbarBodyShape.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 canvas.setContentDescription("shape");
                 activityMainContainerFooterToolBtn.setImageResource(R.drawable.shape);
+                activityMainContainerToolbarMenu.setCurrentItem(1);
             }
         });
         activityMainContainerToolbarBodyFill.setOnClickListener(new View.OnClickListener() {

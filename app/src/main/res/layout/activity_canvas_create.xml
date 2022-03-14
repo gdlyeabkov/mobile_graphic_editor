@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_canvas_create_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/activity_canvas_create_container_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="25dp"
@@ -16,17 +17,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/activity_canvas_create_container_width_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ширина 1000 px"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_canvas_create_container_header" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/activity_canvas_create_container_height_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Высота 1414 px"
@@ -34,11 +35,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.06"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/activity_canvas_create_container_width_label"
         app:layout_constraintVertical_bias="0.00999999" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/activity_canvas_create_container_dpi_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="точек на дюйм 350"
@@ -46,34 +47,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.08"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/activity_canvas_create_container_height_label"
         app:layout_constraintVertical_bias="0.01999998" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/activity_canvas_create_container_edit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="редактировать"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.85"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintStart_toEndOf="@+id/activity_canvas_create_container_height_label"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.120000005" />
 
     <View
-        android:id="@+id/divider"
+        android:id="@+id/activity_canvas_create_container_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/activity_canvas_create_container_dpi_label"
         app:layout_constraintVertical_bias="0.00999999" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/activity_canvas_create_container_create_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Созд."
@@ -81,6 +82,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.13"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider"
+        app:layout_constraintTop_toBottomOf="@+id/activity_canvas_create_container_divider"
         app:layout_constraintVertical_bias="0.01999998" />
 </androidx.constraintlayout.widget.ConstraintLayout>
