@@ -20,13 +20,14 @@ public class ViewStateAdapter extends FragmentStateAdapter {
             return new ToolbarPenMenuFragment();
         } else if (position == 1) {
             return new ToolbarCurveMenuFragment();
+        } else if (position == 2) {
+            return new ToolbarShapeMenuFragment();
         }
         return new ToolbarPenMenuFragment();
     }
 
     @Override
     public int getItemCount() {
-        // Hardcoded, use lists
-        return 2;
+        return 3;
     }
 }

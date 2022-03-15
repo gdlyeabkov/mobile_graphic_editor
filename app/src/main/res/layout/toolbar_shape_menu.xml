@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar_shape_menu_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/toolbar_shape_menu_container_rect"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginRight="9dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView62"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/shape" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/toolbar_shape_menu_container_oval"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginRight="9dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView63"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/fill_oval" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/toolbar_shape_menu_container_polygone"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginRight="9dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView64"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/fill_polygone" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/toolbar_shape_menu_container_divider"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="?android:attr/listDivider" />
+
+    <LinearLayout
+        android:id="@+id/toolbar_shape_menu_container_opacity"
+        android:layout_width="185dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/toolbar_shape_menu_container_opacity_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Непрозрачность\n100%" />
+
+        <SeekBar
+            android:id="@+id/toolbar_shape_menu_container_opacity_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:progress="100" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/toolbar_shape_menu_container_round"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView65"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/more_horizontal" />
+    </LinearLayout>
+
+</LinearLayout>

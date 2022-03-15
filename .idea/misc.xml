@@ -17,10 +17,13 @@
         <entry key="..\:/android_projects/GraphicEditor/app/src/main/res/layout/draw_text_dialog.xml" value="0.4" />
         <entry key="..\:/android_projects/GraphicEditor/app/src/main/res/layout/edit_menu.xml" value="0.176" />
         <entry key="..\:/android_projects/GraphicEditor/app/src/main/res/layout/font_spinner_item.xml" value="0.3961937716262976" />
+        <entry key="..\:/android_projects/GraphicEditor/app/src/main/res/layout/round_shape_menu.xml" value="0.536" />
         <entry key="..\:/android_projects/GraphicEditor/app/src/main/res/layout/selection_menu.xml" value="0.536" />
         <entry key="..\:/android_projects/GraphicEditor/app/src/main/res/layout/toggle_orientation_menu.xml" value="0.264" />
         <entry key="..\:/android_projects/GraphicEditor/app/src/main/res/layout/toolbar_curve_menu.xml" value="0.176" />
         <entry key="..\:/android_projects/GraphicEditor/app/src/main/res/layout/toolbar_pen_menu.xml" value="0.2" />
+        <entry key="..\:/android_projects/GraphicEditor/app/src/main/res/layout/toolbar_shape_menu.xml" value="0.4" />
+        <entry key="..\:/android_projects/GraphicEditor/app/src/main/res/menu/activity_start_menu.xml" value="0.264" />
       </map>
     </option>
   </component>

@@ -7,22 +7,34 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.ContextMenu;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.skydoves.colorpickerview.ColorPickerView;
 import com.skydoves.colorpickerview.listeners.ColorListener;
 import com.skydoves.colorpickerview.listeners.ColorPickerViewListener;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     public LinearLayout activityMainContainerToolbarBodyGradient;
     public LinearLayout activityMainContainerToolbarBodyText;
     public SofttrackCanvas canvas;
+    public Button activityMainContainerPreFooterSaveBtn;
     public LinearLayout activityMainContainerFooterBurger;
     public LinearLayout activityMainContainerFooterEdit;
     public LinearLayout activityMainContainerFooterSelection;
@@ -52,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     public int unvisible;
     public int fillColor;
     public String activeToolbarMenuItem = "line";
+    public int roundRadius = 0;
     public static MainActivity gateway;
 
     @Override
@@ -84,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         activityMainContainerToolbarBodyGradient = findViewById(R.id.activity_main_container_toolbar_body_gradient);
         activityMainContainerToolbarBodyText = findViewById(R.id.activity_main_container_toolbar_body_text);
         activityMainContainerCanvas = findViewById(R.id.activity_main_container_canvas);
+        activityMainContainerPreFooterSaveBtn = findViewById(R.id.activity_main_container_pre_footer_save_btn);
         activityMainContainerFooterBurger = findViewById(R.id.activity_main_container_footer_burger);
         activityMainContainerFooterEdit = findViewById(R.id.activity_main_container_footer_edit);
         activityMainContainerFooterSelection = findViewById(R.id.activity_main_container_footer_selection);
@@ -135,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 canvas.setContentDescription("curve");
                 activityMainContainerFooterToolBtn.setImageResource(R.drawable.curve);
                 activityMainContainerToolbarMenu.setCurrentItem(1);
+                MainActivity.gateway.activeToolbarMenuItem = "line";
             }
         });
         activityMainContainerToolbarBodyShape.setOnClickListener(new View.OnClickListener() {
@@ -142,7 +158,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 canvas.setContentDescription("shape");
                 activityMainContainerFooterToolBtn.setImageResource(R.drawable.shape);
-                activityMainContainerToolbarMenu.setCurrentItem(1);
+                activityMainContainerToolbarMenu.setCurrentItem(2);
+                MainActivity.gateway.activeToolbarMenuItem = "rect";
             }
         });
         activityMainContainerToolbarBodyFill.setOnClickListener(new View.OnClickListener() {
@@ -181,6 +198,12 @@ public class MainActivity extends AppCompatActivity {
                 contextMenu.add(Menu.NONE, 110, Menu.NONE, "Войти");
                 contextMenu.add(Menu.NONE, 111, Menu.NONE, "Выход");
 
+            }
+        });
+        activityMainContainerPreFooterSaveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveImg(canvas);
             }
         });
         activityMainContainerFooterEdit.setOnClickListener(new View.OnClickListener() {
@@ -269,6 +292,22 @@ public class MainActivity extends AppCompatActivity {
         visible = View.VISIBLE;
         unvisible = View.GONE;
         fillColor = Color.BLACK;
+    }
+
+    public void saveImg(View view) {
+        canvas.setDrawingCacheEnabled(true);
+        Bitmap bitmap = canvas.getDrawingCache();
+        String rawDownloadsDir = Environment.DIRECTORY_DOWNLOADS;
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(rawDownloadsDir);
+        String downloadsDirPath = downloadsDir.getPath();
+        String filename = downloadsDirPath + "/graphic_editor_export.png";
+        try (FileOutputStream out = new FileOutputStream(filename)) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            String toastMessage = "Сохранено.";
+            Toast toast = Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_SHORT);
+        } catch (IOException e) {
+            Log.d("debug", "ошибка экспорта");
+        }
     }
 
 }

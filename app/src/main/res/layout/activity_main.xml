@@ -178,6 +178,7 @@
             app:layout_constraintVertical_bias="0.86">
 
             <LinearLayout
+                android:id="@+id/activity_main_container_pre_footer_undo"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
@@ -191,6 +192,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/activity_main_container_pre_footer_redo"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
@@ -204,6 +206,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/activity_main_container_pre_footer_pipet"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
@@ -217,6 +220,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/activity_main_container_pre_footer_pen"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
@@ -230,6 +234,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/activity_main_container_pre_footer_eraser"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
@@ -243,6 +248,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/activity_main_container_pre_footer_zoom"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
@@ -256,13 +262,14 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/activity_main_container_pre_footer_save_btn"
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Save" />
 
             <LinearLayout
+                android:id="@+id/activity_main_container_pre_footer_drager"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="1"
@@ -359,7 +366,7 @@
                     android:id="@+id/activity_main_container_footer_tool_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/selection" />
+                    app:srcCompat="@drawable/pen" />
             </LinearLayout>
 
             <LinearLayout
