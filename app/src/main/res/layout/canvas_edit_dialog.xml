@@ -32,14 +32,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|numberDecimal"
                 android:text="1000"
                 tools:ignore="TouchTargetSizeCheck" />
 
             <Spinner
                 android:id="@+id/canvas_edit_dialog_container_width_row_measure"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
         </LinearLayout>
@@ -65,14 +65,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|numberDecimal"
                 android:text="1414"
                 tools:ignore="TouchTargetSizeCheck" />
 
             <Spinner
                 android:id="@+id/canvas_edit_dialog_container_height_row_measure"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
         </LinearLayout>
@@ -92,7 +92,8 @@
             android:layout_weight="1"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="350" />
+            android:text="350"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
             android:id="@+id/canvas_edit_dialog_container_paper_label"
@@ -107,7 +108,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_weight="1"
-            tools:ignore="SpeakableTextPresentCheck" />
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
         <TextView
             android:id="@+id/canvas_edit_dialog_container_background_label"
@@ -146,13 +147,16 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:clickable="true"
+            android:orientation="horizontal"
+            tools:ignore="DuplicateClickableBoundsCheck,TouchTargetSizeCheck">
 
             <ImageButton
                 android:id="@+id/canvas_edit_dialog_container_background_color_btn"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_weight="1"
+                android:clickable="true"
                 app:srcCompat="@drawable/shape"
                 tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
         </LinearLayout>

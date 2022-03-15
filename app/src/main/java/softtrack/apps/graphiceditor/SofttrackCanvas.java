@@ -1,9 +1,11 @@
 package softtrack.apps.graphiceditor;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -13,12 +15,14 @@ import android.graphics.Point;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowMetrics;
 import android.view.inputmethod.InputMethodManager;
@@ -70,14 +74,26 @@ public class SofttrackCanvas extends View {
     public int outlineTextColor;
     public float[] initialCurvePoints = new float[6];
     public int initialCurvePointsCursor = -1;
-    public GestureDetector gestureDetector;
+//    public GestureDetector gestureDetector;
+    public ScaleGestureDetector gestureDetector;
     public Canvas myCanvas = null;
 
     public SofttrackCanvas(Context context) {
         super(context);
 
         initialize((MainActivity) context);
-        gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+        gestureDetector = new ScaleGestureDetector(getContext(), new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+                Log.d("debug", "zoom канвас");
+                myCanvas.scale(0.1f, 0.1f);
+                return super.onScale(detector);
+            }
+        });
+        if (Build.VERSION.SDK_INT >= 19) {
+            gestureDetector.setQuickScaleEnabled(false);
+        }
+        /*gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
                 if (myCanvas != null) {
@@ -87,8 +103,12 @@ public class SofttrackCanvas extends View {
                         // right to left swipe
                         if (e1.getX() - e2.getX() > 0 && Math.abs(velocityX) > 100) {
                             myCanvas.rotate(45);
+                            myCanvas.scale(0.1f, 0.1f);
+                            myCanvas.translate(5.0f, 5.0f);
                         } else if (e2.getX() - e1.getX() > 0 && Math.abs(velocityX) > 100) {
                             myCanvas.rotate(135);
+                            myCanvas.scale(0.1f, 0.1f);
+                            myCanvas.translate(5.0f, 5.0f);
                         }
                     } catch (Exception e) {
                         // nothing
@@ -102,13 +122,14 @@ public class SofttrackCanvas extends View {
                 myCanvas.rotate(45);
                 return true;
             }
-        });
+        });*/
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        canvas.drawColor(MainActivity.gateway.canvasBackgroundColor);
         myCanvas = canvas;
         // для вращения канваса
         //        canvas.rotate(15);
@@ -127,10 +148,15 @@ public class SofttrackCanvas extends View {
                 float lineY2 = (float) line.get("y2");
                 int lineColor = (int) line.get("color");
                 int lineStrokeWidth = (int) line.get("strokeWidth");
-                Paint linePaint = new Paint();
-                linePaint.setColor(lineColor);
-                linePaint.setStrokeWidth(lineStrokeWidth);
-                canvas.drawLine(lineX1, lineY1, lineX2, lineY2, linePaint);
+                int lineLayerIndex = (int) line.get("layer");
+                HashMap<String, Object> lineLayer = MainActivity.gateway.layers.get(lineLayerIndex);
+                boolean lineLayerVisibility = (boolean) lineLayer.get("visibility");
+                if (lineLayerVisibility) {
+                    Paint linePaint = new Paint();
+                    linePaint.setColor(lineColor);
+                    linePaint.setStrokeWidth(lineStrokeWidth);
+                    canvas.drawLine(lineX1, lineY1, lineX2, lineY2, linePaint);
+                }
             }
         }
 
@@ -323,7 +349,20 @@ public class SofttrackCanvas extends View {
 
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+//        return super.onTouchEvent(event);
+        super.onTouchEvent(event);
+        return true;
+    }
+
     public void initialize(MainActivity context) {
+        initializeConstants();
+        addHandlers();
+//        getTransferData();
+    }
+
+    public void initializeConstants() {
         enabledBtnColor = Color.argb(255, 255, 255, 255);
         disabledBtnColor = Color.TRANSPARENT;
         fillColor = Color.BLACK;
@@ -339,7 +378,9 @@ public class SofttrackCanvas extends View {
         paint = new Paint();
         paint.setStrokeWidth(10);
         context = context;
-        MainActivity finalContext = context;
+    }
+
+    public void addHandlers() {
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -431,6 +472,7 @@ public class SofttrackCanvas extends View {
                             fillTextColor = Color.BLACK;
                             outlineTextColor = Color.BLACK;
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            MainActivity finalContext = context;
                             LayoutInflater inflater = finalContext.getLayoutInflater();
                             View dialogView = inflater.inflate(R.layout.draw_text_dialog, null);
                             builder.setView(dialogView);
@@ -514,25 +556,25 @@ public class SofttrackCanvas extends View {
                                         @Override
                                         public void onClick(View view) {
                                             new ColorPickerDialog.Builder(getContext())
-                                                .setPreferenceName("MyColorPickerDialog")
-                                                .setPositiveButton("ОК",
-                                                        new ColorEnvelopeListener() {
-                                                            @Override
-                                                            public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
-                                                                fillTextColor = envelope.getColor();
-                                                            }
-                                                        })
-                                                .setNegativeButton("Отмена",
-                                                        new DialogInterface.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                                dialogInterface.dismiss();
-                                                            }
-                                                        })
-                                                .attachAlphaSlideBar(true) // the default value is true.
-                                                .attachBrightnessSlideBar(true)  // the default value is true.
-                                                .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
-                                                .show();
+                                                    .setPreferenceName("MyColorPickerDialog")
+                                                    .setPositiveButton("ОК",
+                                                            new ColorEnvelopeListener() {
+                                                                @Override
+                                                                public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
+                                                                    fillTextColor = envelope.getColor();
+                                                                }
+                                                            })
+                                                    .setNegativeButton("Отмена",
+                                                            new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                                    dialogInterface.dismiss();
+                                                                }
+                                                            })
+                                                    .attachAlphaSlideBar(true) // the default value is true.
+                                                    .attachBrightnessSlideBar(true)  // the default value is true.
+                                                    .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
+                                                    .show();
                                         }
 
                                     });
@@ -619,25 +661,25 @@ public class SofttrackCanvas extends View {
                                         @Override
                                         public void onClick(View view) {
                                             new ColorPickerDialog.Builder(getContext())
-                                                .setPreferenceName("MyColorPickerDialog")
-                                                .setPositiveButton("ОК",
-                                                    new ColorEnvelopeListener() {
-                                                        @Override
-                                                        public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
-                                                            outlineTextColor = envelope.getColor();
-                                                        }
-                                                    })
-                                                .setNegativeButton("Отмена",
-                                                    new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                                            dialogInterface.dismiss();
-                                                        }
-                                                    })
-                                                .attachAlphaSlideBar(true) // the default value is true.
-                                                .attachBrightnessSlideBar(true)  // the default value is true.
-                                                .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
-                                                .show();
+                                                    .setPreferenceName("MyColorPickerDialog")
+                                                    .setPositiveButton("ОК",
+                                                            new ColorEnvelopeListener() {
+                                                                @Override
+                                                                public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
+                                                                    outlineTextColor = envelope.getColor();
+                                                                }
+                                                            })
+                                                    .setNegativeButton("Отмена",
+                                                            new DialogInterface.OnClickListener() {
+                                                                @Override
+                                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                                    dialogInterface.dismiss();
+                                                                }
+                                                            })
+                                                    .attachAlphaSlideBar(true) // the default value is true.
+                                                    .attachBrightnessSlideBar(true)  // the default value is true.
+                                                    .setBottomSpace(12) // set a bottom space between the last slidebar and buttons.
+                                                    .show();
 
                                         }
                                     });
@@ -679,6 +721,7 @@ public class SofttrackCanvas extends View {
                             line.put("color", activityMainPaleteColor.getColor());
                             line.put("strokeWidth", 10);
                             lines.add(line);
+                            line.put("layer", MainActivity.gateway.currentLayer);
                             invalidate();
                         } else if (activeTool.equalsIgnoreCase("eraser")) {
                             touchX = event.getX();
@@ -715,6 +758,10 @@ public class SofttrackCanvas extends View {
                 return true;
             }
         });
+    }
+
+    public void getTransferData() {
+
     }
 
 }

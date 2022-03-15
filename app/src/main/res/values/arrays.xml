@@ -9,4 +9,20 @@
         <item>px</item>
         <item>cm</item>
     </string-array>
+    <string-array name="size_paper">
+        <item>A4(210 * 297 мм)</item>
+        <item>A5(148 * 210 мм)</item>
+        <item>A6(105 * 148 мм)</item>
+        <item>B5(182 * 257 мм)</item>
+        <item>B6(128 * 182 мм)</item>
+        <item>Стикер ЛИНИЯ(x1)</item>
+        <item>Стикер ЛИНИЯ(x2)</item>
+        <item>Стикер ЛИНИЯ(x4)</item>
+        <item>Twitter</item>
+        <item>Заголовок Twitter</item>
+        <item>Значок Twitter</item>
+        <item>История(Персонажи)</item>
+        <item>История(Фон)</item>
+        <item>История(Клип-арт)</item>
+    </string-array>
 </resources>

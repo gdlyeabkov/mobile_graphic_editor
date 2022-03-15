@@ -7,9 +7,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -17,14 +19,17 @@ import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.skydoves.colorpickerview.ColorPickerView;
@@ -35,6 +40,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,7 +57,14 @@ public class MainActivity extends AppCompatActivity {
     public LinearLayout activityMainContainerToolbarBodyGradient;
     public LinearLayout activityMainContainerToolbarBodyText;
     public SofttrackCanvas canvas;
+    public LinearLayout activityMainContainerPreFooterUndo;
+    public LinearLayout activityMainContainerPreFooterRedo;
+    public LinearLayout activityMainContainerPreFooterPipet;
+    public LinearLayout activityMainContainerPreFooterPen;
+    public LinearLayout activityMainContainerPreFooterEraser;
+    public LinearLayout activityMainContainerPreFooterZoom;
     public Button activityMainContainerPreFooterSaveBtn;
+    public LinearLayout activityMainContainerPreFooterDragger;
     public LinearLayout activityMainContainerFooterBurger;
     public LinearLayout activityMainContainerFooterEdit;
     public LinearLayout activityMainContainerFooterSelection;
@@ -60,12 +74,24 @@ public class MainActivity extends AppCompatActivity {
     public LinearLayout activityMainContainerFooterPalete;
     public LinearLayout activityMainContainerFooterLayers;
     public LinearLayout activityMainContainerFooterMaterials;
+    public LinearLayout activityMainLayersContainerLayerListBody;
+    public LinearLayout activityMainLayersContainerListBodyInitialLayer;
+//    public LinearLayout activityMainLayersContainerListBodyInitialLayerVisibility;
+    public ImageView activityMainLayersContainerListBodyInitialLayerVisibilityIcon;
+    public LinearLayout activityMainLayersContainerLayerActionsAdd;
     public ColorPickerView activityMainPaleteColor;
     public int visible;
     public int unvisible;
     public int fillColor;
     public String activeToolbarMenuItem = "line";
     public int roundRadius = 0;
+    public int canvasWidth;
+    public int canvasHeight;
+    public int canvasDpi;
+    public String canvasPaperSize;
+    public int canvasBackgroundColor;
+    public ArrayList<HashMap<String, Object>> layers;
+    public int currentLayer;
     public static MainActivity gateway;
 
     @Override
@@ -80,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     public void initialize() {
         initializeConstants();
         findViews();
+        getTransferData();
         initializeToolbarMenu();
         initializeCanvas();
         initializeActionBar();
@@ -98,7 +125,14 @@ public class MainActivity extends AppCompatActivity {
         activityMainContainerToolbarBodyGradient = findViewById(R.id.activity_main_container_toolbar_body_gradient);
         activityMainContainerToolbarBodyText = findViewById(R.id.activity_main_container_toolbar_body_text);
         activityMainContainerCanvas = findViewById(R.id.activity_main_container_canvas);
+        activityMainContainerPreFooterRedo = findViewById(R.id.activity_main_container_pre_footer_drager);
+        activityMainContainerPreFooterUndo = findViewById(R.id.activity_main_container_pre_footer_drager);
+        activityMainContainerPreFooterPipet = findViewById(R.id.activity_main_container_pre_footer_pipet);
+        activityMainContainerPreFooterPen = findViewById(R.id.activity_main_container_pre_footer_pen);
+        activityMainContainerPreFooterEraser = findViewById(R.id.activity_main_container_pre_footer_eraser);
+        activityMainContainerPreFooterZoom = findViewById(R.id.activity_main_container_pre_footer_zoom);
         activityMainContainerPreFooterSaveBtn = findViewById(R.id.activity_main_container_pre_footer_save_btn);
+        activityMainContainerPreFooterDragger = findViewById(R.id.activity_main_container_pre_footer_drager);
         activityMainContainerFooterBurger = findViewById(R.id.activity_main_container_footer_burger);
         activityMainContainerFooterEdit = findViewById(R.id.activity_main_container_footer_edit);
         activityMainContainerFooterSelection = findViewById(R.id.activity_main_container_footer_selection);
@@ -108,6 +142,11 @@ public class MainActivity extends AppCompatActivity {
         activityMainContainerFooterPalete = findViewById(R.id.activity_main_container_footer_palete);
         activityMainContainerFooterLayers = findViewById(R.id.activity_main_container_footer_layers);
         activityMainContainerFooterMaterials = findViewById(R.id.activity_main_container_footer_materials);
+        activityMainLayersContainerLayerListBody = findViewById(R.id.activity_main_layers_container_list_body);
+        activityMainLayersContainerListBodyInitialLayer = findViewById(R.id.activity_main_layers_container_list_body_initial_layer);
+//        activityMainLayersContainerListBodyInitialLayerVisibility = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_visibility);
+        activityMainLayersContainerListBodyInitialLayerVisibilityIcon = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_visibility_icon);
+        activityMainLayersContainerLayerActionsAdd = findViewById(R.id.activity_main_layers_container_layer_actions_add);
     }
 
     public void initializeToolbarMenu() {
@@ -200,6 +239,22 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        activityMainContainerPreFooterPen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                canvas.setContentDescription("pen");
+                activityMainContainerFooterToolBtn.setImageResource(R.drawable.pen);
+                activityMainContainerToolbarMenu.setCurrentItem(0);
+            }
+        });
+        activityMainContainerPreFooterEraser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                canvas.setContentDescription("eraser");
+                activityMainContainerFooterToolBtn.setImageResource(R.drawable.pen);
+                activityMainContainerToolbarMenu.setCurrentItem(0);
+            }
+        });
         activityMainContainerPreFooterSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -285,6 +340,72 @@ public class MainActivity extends AppCompatActivity {
                 activityMainDrawer.openDrawer(Gravity.RIGHT);
             }
         });
+        LinearLayout activityMainLayersContainerListBodyInitialLayer = findViewById(R.id.activity_main_layers_container_list_body_initial_layer);
+        activityMainLayersContainerListBodyInitialLayer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectLayer(view);
+            }
+        });
+//        activityMainLayersContainerListBodyInitialLayerVisibility.setOnClickListener(new View.OnClickListener() {
+        activityMainLayersContainerListBodyInitialLayerVisibilityIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleLayerVisibility(activityMainLayersContainerListBodyInitialLayer);
+            }
+        });
+        activityMainLayersContainerLayerActionsAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HashMap<String, Object> layersItem = new HashMap<String, Object>();
+                layersItem.put("visibility", true);
+                layers.add(layersItem);
+                LinearLayout layer = new LinearLayout(MainActivity.this);
+                layer.setOrientation(LinearLayout.HORIZONTAL);
+                ImageView layerVisibilityIcon = new ImageView(MainActivity.this);
+                layerVisibilityIcon.setImageResource(R.drawable.visibility);
+                LinearLayout.LayoutParams layerVisibilityIconLayoutParams = new LinearLayout.LayoutParams(65, 65);
+                layerVisibilityIconLayoutParams.setMargins(0, 10, 0, 0);
+                layerVisibilityIcon.setLayoutParams(layerVisibilityIconLayoutParams);
+                ImageView layerThumbnailIcon = new ImageView(MainActivity.this);
+                layerThumbnailIcon.setImageResource(R.drawable.shape);
+                LinearLayout.LayoutParams layerThumbnailIconLayoutParams = new LinearLayout.LayoutParams(65, 65);
+                layerThumbnailIconLayoutParams.setMargins(0, 10, 0, 0);
+                layerThumbnailIcon.setLayoutParams(layerThumbnailIconLayoutParams);
+                TextView layerNameLabel = new TextView(MainActivity.this);
+                int layerNumber = layers.size();
+                String rawLayerNumber = String.valueOf(layerNumber);
+                layerNameLabel.setText("Слой " + rawLayerNumber);
+                LinearLayout.LayoutParams layerNameLabelLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                layerNameLabelLayoutParams.setMargins(25, 10, 25, 0);
+                layerNameLabel.setLayoutParams(layerNameLabelLayoutParams);
+                ImageView layerSettingsIcon = new ImageView(MainActivity.this);
+                layerSettingsIcon.setImageResource(R.drawable.settings);
+                LinearLayout.LayoutParams layerSettingsIconLayoutParams = new LinearLayout.LayoutParams(65, 65);
+                layerSettingsIconLayoutParams.setMargins(25, 10, 25, 0);
+                layerSettingsIcon.setLayoutParams(layerSettingsIconLayoutParams);
+                layer.addView(layerVisibilityIcon);
+                layer.addView(layerThumbnailIcon);
+                layer.addView(layerNameLabel);
+                layer.addView(layerSettingsIcon);
+                activityMainLayersContainerLayerListBody.addView(layer);
+                layer.setContentDescription(rawLayerNumber);
+                layer.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        selectLayer(view);
+                    }
+                });
+                layerVisibilityIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        LinearLayout layer = (LinearLayout) view.getParent();
+                        toggleLayerVisibility(layer);
+                    }
+                });
+                selectLayer(layer);
+            }
+        });
     }
 
     public void initializeConstants() {
@@ -292,6 +413,11 @@ public class MainActivity extends AppCompatActivity {
         visible = View.VISIBLE;
         unvisible = View.GONE;
         fillColor = Color.BLACK;
+        layers = new ArrayList<HashMap<String, Object>>();
+        HashMap<String, Object> initialLayer = new HashMap<String, Object>();
+        initialLayer.put("visibility", true);
+        layers.add(initialLayer);
+        currentLayer = 0;
     }
 
     public void saveImg(View view) {
@@ -302,12 +428,59 @@ public class MainActivity extends AppCompatActivity {
         String downloadsDirPath = downloadsDir.getPath();
         String filename = downloadsDirPath + "/graphic_editor_export.png";
         try (FileOutputStream out = new FileOutputStream(filename)) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            String toastMessage = "Сохранено.";
+            int canvasDpiInPercents = canvasDpi / 4;
+            String toastMessage = "";
+            boolean isDpiCorrect = canvasDpiInPercents <= 100;
+            if (isDpiCorrect) {
+                bitmap.compress(Bitmap.CompressFormat.PNG, canvasDpiInPercents, out);
+                toastMessage = "Сохранено.";
+            } else {
+                toastMessage = "Неправильно указан DPI.";
+            }
             Toast toast = Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_SHORT);
+            toast.show();
         } catch (IOException e) {
             Log.d("debug", "ошибка экспорта");
         }
+    }
+
+    public void getTransferData() {
+        Intent myIntent = getIntent();
+        Bundle extras = myIntent.getExtras();
+        canvasWidth = extras.getInt("width");
+        canvasHeight = extras.getInt("height");
+        canvasDpi = extras.getInt("dpi");
+        canvasPaperSize = extras.getString("paperSize");
+        canvasBackgroundColor = extras.getInt("backgroundColor");
+    }
+
+    public void selectLayer(View view) {
+        for (int i = 0; i < activityMainLayersContainerLayerListBody.getChildCount(); i++) {
+            activityMainLayersContainerLayerListBody.getChildAt(i).setBackgroundColor(Color.rgb(255, 255, 255));
+        }
+        CharSequence rawLayerNumber = view.getContentDescription();
+        String layerNumber = rawLayerNumber.toString();
+        currentLayer = Integer.valueOf(layerNumber) - 1;
+        view.setBackgroundColor(Color.rgb(235, 235, 235));
+    }
+
+    public void toggleLayerVisibility(View view) {
+        CharSequence rawLayerNumber = view.getContentDescription();
+        String layerNumber = rawLayerNumber.toString();
+        int layerIndex = Integer.valueOf(layerNumber) - 1;
+        HashMap<String, Object> layer = layers.get(layerIndex);
+        boolean layerVisibility = (boolean) layer.get("visibility");
+        LinearLayout someLayer = (LinearLayout) view;
+//        LinearLayout someLayerVisibility = (LinearLayout) someLayer.getChildAt(0);
+//        ImageView someLayerVisibilityIcon = (ImageView) someLayerVisibility.getChildAt(0);
+        ImageView someLayerVisibilityIcon = (ImageView) someLayer.getChildAt(0);
+        if (layerVisibility) {
+            someLayerVisibilityIcon.setColorFilter(Color.rgb(200, 200, 200));
+        } else {
+            someLayerVisibilityIcon.setColorFilter(Color.rgb(0, 0, 0));
+        }
+        layer.put("visibility", !layerVisibility);
+        canvas.invalidate();
     }
 
 }

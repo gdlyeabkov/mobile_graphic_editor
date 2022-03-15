@@ -266,7 +266,7 @@
                 android:layout_width="65dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Save" />
+                android:text="Сохр." />
 
             <LinearLayout
                 android:id="@+id/activity_main_container_pre_footer_drager"
@@ -448,10 +448,155 @@
         android:layout_gravity="right"
         android:padding="25dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="layers" />
+        <LinearLayout
+            android:id="@+id/activity_main_layers_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ScrollView
+                android:id="@+id/activity_main_layers_container_list"
+                android:layout_width="match_parent"
+                android:layout_height="500dp">
+
+                <LinearLayout
+                    android:id="@+id/activity_main_layers_container_list_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/activity_main_layers_container_list_body_initial_layer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#EBEBEB"
+                        android:contentDescription="1"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/activity_main_layers_container_list_body_initial_layer_visibility_icon"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            app:srcCompat="@drawable/visibility" />
+
+                        <LinearLayout
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/imageView67"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@drawable/shape" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/textView37"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Слой 1" />
+
+                        <LinearLayout
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:id="@+id/imageView68"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:srcCompat="@drawable/settings" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/activity_main_layers_container_layer_actions"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/activity_main_layers_container_layer_actions_add"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/add" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_layers_container_layer_actions_remove"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView73"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/bucket" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_layers_container_layer_actions_order_up"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView72"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@android:drawable/arrow_up_float" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_layers_container_layer_actions_order_down"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView71"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@android:drawable/arrow_down_float" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_layers_container_layer_actions_lock"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView70"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/lock" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_main_layers_container_layer_actions_more"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView69"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/more_horizontal" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>
