@@ -166,41 +166,47 @@ public class SofttrackCanvas extends View {
             for (int curveIndex = 0; curveIndex < curves.size(); curveIndex++) {
                 HashMap curve = curves.get(curveIndex);
                 String curveType = (String) curve.get("type");
-                int curveColor = (int) curve.get("color");
-                Paint curvePaint = new Paint();
-                curvePaint.setStyle(Paint.Style.STROKE);
-                curvePaint.setColor(curveColor);
-                if (curveType == "line") {
-                    float curveX1 = (float) curve.get("x1");
-                    float curveY1 = (float) curve.get("y1");
-                    float curveX2 = (float) curve.get("x2");
-                    float curveY2 = (float) curve.get("y2");
-                    canvas.drawLine(curveX1, curveY1, curveX2, curveY2, curvePaint);
-                } else if (curveType == "path") {
 
-                    float curveX1 = (float) curve.get("x1");
-                    float curveY1 = (float) curve.get("y1");
-                    float curveX2 = (float) curve.get("x2");
-                    float curveY2 = (float) curve.get("y2");
-                    float curveX3 = (float) curve.get("x3");
-                    float curveY3 = (float) curve.get("y3");
-                    curvePaint.setStrokeWidth(10);
-                    Path path = new Path();
-                    path.moveTo(curveX1, curveX2);
-                    path.cubicTo(curveX1, curveY1, curveX2, curveY2, curveX3, curveY3);
-                    canvas.drawPath(path, curvePaint);
-                } else if (curveType == "rect") {
-                    float curveX1 = (float) curve.get("x1");
-                    float curveY1 = (float) curve.get("y1");
-                    float curveX2 = (float) curve.get("x2");
-                    float curveY2 = (float) curve.get("y2");
-                    canvas.drawRect(curveX1, curveY1, curveX2, curveY2, curvePaint);
-                } else if (curveType == "oval") {
-                    float curveX1 = (float) curve.get("x1");
-                    float curveY1 = (float) curve.get("y1");
-                    float curveX2 = (float) curve.get("x2");
-                    float curveY2 = (float) curve.get("y2");
-                    canvas.drawOval(curveX1, curveY1, curveX2, curveY2, curvePaint);
+                int lineLayerIndex = (int) curve.get("layer");
+                HashMap<String, Object> lineLayer = MainActivity.gateway.layers.get(lineLayerIndex);
+                boolean lineLayerVisibility = (boolean) lineLayer.get("visibility");
+                if (lineLayerVisibility) {
+                    int curveColor = (int) curve.get("color");
+                    Paint curvePaint = new Paint();
+                    curvePaint.setStyle(Paint.Style.STROKE);
+                    curvePaint.setColor(curveColor);
+                    if (curveType == "line") {
+                        float curveX1 = (float) curve.get("x1");
+                        float curveY1 = (float) curve.get("y1");
+                        float curveX2 = (float) curve.get("x2");
+                        float curveY2 = (float) curve.get("y2");
+                        canvas.drawLine(curveX1, curveY1, curveX2, curveY2, curvePaint);
+                    } else if (curveType == "path") {
+
+                        float curveX1 = (float) curve.get("x1");
+                        float curveY1 = (float) curve.get("y1");
+                        float curveX2 = (float) curve.get("x2");
+                        float curveY2 = (float) curve.get("y2");
+                        float curveX3 = (float) curve.get("x3");
+                        float curveY3 = (float) curve.get("y3");
+                        curvePaint.setStrokeWidth(10);
+                        Path path = new Path();
+                        path.moveTo(curveX1, curveX2);
+                        path.cubicTo(curveX1, curveY1, curveX2, curveY2, curveX3, curveY3);
+                        canvas.drawPath(path, curvePaint);
+                    } else if (curveType == "rect") {
+                        float curveX1 = (float) curve.get("x1");
+                        float curveY1 = (float) curve.get("y1");
+                        float curveX2 = (float) curve.get("x2");
+                        float curveY2 = (float) curve.get("y2");
+                        canvas.drawRect(curveX1, curveY1, curveX2, curveY2, curvePaint);
+                    } else if (curveType == "oval") {
+                        float curveX1 = (float) curve.get("x1");
+                        float curveY1 = (float) curve.get("y1");
+                        float curveX2 = (float) curve.get("x2");
+                        float curveY2 = (float) curve.get("y2");
+                        canvas.drawOval(curveX1, curveY1, curveX2, curveY2, curvePaint);
+                    }
                 }
             }
         }
@@ -212,22 +218,28 @@ public class SofttrackCanvas extends View {
                 HashMap shape = shapes.get(shapeIndex);
                 String shapeType = (String) shape.get("type");
                 int shapeColor = (int) shape.get("color");
-                Paint shapePaint = new Paint();
-                shapePaint.setStyle(Paint.Style.FILL);
-                shapePaint.setColor(shapeColor );
-                if (shapeType == "rect") {
-                    float shapeX1 = (float) shape.get("x1");
-                    float shapeY1 = (float) shape.get("y1");
-                    float shapeX2 = (float) shape.get("x2");
-                    float shapeY2 = (float) shape.get("y2");
-                    int shapeRadius = (int) shape.get("radius");
-                    canvas.drawRoundRect(shapeX1, shapeY1, shapeX2, shapeY2, shapeRadius, shapeRadius, shapePaint);
-                } else if (shapeType == "oval") {
-                    float shapeX1 = (float) shape.get("x1");
-                    float shapeY1 = (float) shape.get("y1");
-                    float shapeX2 = (float) shape.get("x2");
-                    float shapeY2 = (float) shape.get("y2");
-                    canvas.drawOval(shapeX1, shapeY1, shapeX2, shapeY2, shapePaint);
+
+                int lineLayerIndex = (int) shape.get("layer");
+                HashMap<String, Object> lineLayer = MainActivity.gateway.layers.get(lineLayerIndex);
+                boolean lineLayerVisibility = (boolean) lineLayer.get("visibility");
+                if (lineLayerVisibility) {
+                    Paint shapePaint = new Paint();
+                    shapePaint.setStyle(Paint.Style.FILL);
+                    shapePaint.setColor(shapeColor );
+                    if (shapeType == "rect") {
+                        float shapeX1 = (float) shape.get("x1");
+                        float shapeY1 = (float) shape.get("y1");
+                        float shapeX2 = (float) shape.get("x2");
+                        float shapeY2 = (float) shape.get("y2");
+                        int shapeRadius = (int) shape.get("radius");
+                        canvas.drawRoundRect(shapeX1, shapeY1, shapeX2, shapeY2, shapeRadius, shapeRadius, shapePaint);
+                    } else if (shapeType == "oval") {
+                        float shapeX1 = (float) shape.get("x1");
+                        float shapeY1 = (float) shape.get("y1");
+                        float shapeX2 = (float) shape.get("x2");
+                        float shapeY2 = (float) shape.get("y2");
+                        canvas.drawOval(shapeX1, shapeY1, shapeX2, shapeY2, shapePaint);
+                    }
                 }
             }
         }
@@ -273,8 +285,16 @@ public class SofttrackCanvas extends View {
                 int textOutlineWidth = (int) text.get("textOutlineWidth");
                 int textFillColor = (int) text.get("fillTextColor");
                 int textOutlineColor = (int) text.get("outlineTextColor");
+
                 // boolean isFontFamily = (boolean) text.get("isFontFamily");
+
                 Paint textPaint = new Paint();
+
+                String fontFamily = (String) text.get("fontFamily");
+                if (fontFamily.length() >= 1) {
+
+                }
+
                 textPaint.setColor(Color.BLACK);
                 textPaint.setTextSize(fontSize);
                 textPaint.setFakeBoldText(isTextBold);
@@ -427,6 +447,7 @@ public class SofttrackCanvas extends View {
                                     curve.put("x3", initialCurvePoints[4]);
                                     curve.put("y3", initialCurvePoints[5]);
                                     curve.put("type", MainActivity.gateway.activeToolbarMenuItem);
+                                    curve.put("layer", MainActivity.gateway.currentLayer);
                                     Log.d("debug", "path: " + String.valueOf(initialCurvePoints[0]) + " " + String.valueOf(initialCurvePoints[1]) + " " + String.valueOf(initialCurvePoints[2]) + " " + String.valueOf(initialCurvePoints[3]) + " " + String.valueOf(initialCurvePoints[4]) + " " + String.valueOf(initialCurvePoints[5]) + ", cursor: " + String.valueOf(initialCurvePointsCursor));
                                     initialCurvePointsCursor = -1;
                                     initialCurvePoints[0] = 0;
@@ -443,6 +464,7 @@ public class SofttrackCanvas extends View {
                                 curve.put("x2", touchX);
                                 curve.put("y2", touchY);
                                 curve.put("type", MainActivity.gateway.activeToolbarMenuItem);
+                                curve.put("layer", MainActivity.gateway.currentLayer);
                                 curves.add(curve);
                             }
 
@@ -458,6 +480,7 @@ public class SofttrackCanvas extends View {
                             ColorPickerView activityMainPaleteColor = MainActivity.gateway.findViewById(R.id.activity_main_palete_color);
                             shape.put("color", activityMainPaleteColor.getColor());
                             shape.put("type", MainActivity.gateway.activeToolbarMenuItem);
+                            shape.put("layer", MainActivity.gateway.currentLayer);
                             shapes.add(shape);
                         }  else if (activeTool.equalsIgnoreCase("fill")) {
                             HashMap fill = new HashMap<String, Object>();
@@ -518,7 +541,11 @@ public class SofttrackCanvas extends View {
                                     text.put("isTextItalic", isItalic);
                                     text.put("isTextSmooth", isTextSmooth);
                                     text.put("textOutlineWidth", drawTextDialogContainerOutlineWidthSlider.getProgress());
+
+                                    String fontFamily = (String) drawTextDialogContainerFontFamily.getSelectedItem();
+                                     text.put("fontFamily", fontFamily);
                                     // text.put("isFontFamily", false);
+
                                     text.put("isTextOutlineSmooth", isTextOutlineSmooth);
                                     text.put("fillTextColor", fillTextColor);
                                     text.put("outlineTextColor", outlineTextColor);

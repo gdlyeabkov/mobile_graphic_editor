@@ -492,23 +492,18 @@
                         </LinearLayout>
 
                         <TextView
-                            android:id="@+id/textView37"
+                            android:id="@+id/activity_main_layers_container_list_body_initial_layer_name_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Слой 1" />
 
-                        <LinearLayout
+                        <ImageView
+                            android:id="@+id/activity_main_layers_container_list_body_initial_layer_settings_icon"
                             android:layout_width="35dp"
                             android:layout_height="35dp"
-                            android:orientation="vertical">
+                            app:srcCompat="@drawable/settings" />
 
-                            <ImageView
-                                android:id="@+id/imageView68"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:srcCompat="@drawable/settings" />
-                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>
@@ -541,6 +536,7 @@
                         android:id="@+id/imageView73"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:tint="#EBEBEB"
                         app:srcCompat="@drawable/bucket" />
                 </LinearLayout>
 

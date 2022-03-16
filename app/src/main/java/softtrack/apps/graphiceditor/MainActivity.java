@@ -1,46 +1,43 @@
 package softtrack.apps.graphiceditor;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Path;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.skydoves.colorpickerview.ColorPickerView;
 import com.skydoves.colorpickerview.listeners.ColorListener;
-import com.skydoves.colorpickerview.listeners.ColorPickerViewListener;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -76,9 +73,11 @@ public class MainActivity extends AppCompatActivity {
     public LinearLayout activityMainContainerFooterMaterials;
     public LinearLayout activityMainLayersContainerLayerListBody;
     public LinearLayout activityMainLayersContainerListBodyInitialLayer;
-//    public LinearLayout activityMainLayersContainerListBodyInitialLayerVisibility;
     public ImageView activityMainLayersContainerListBodyInitialLayerVisibilityIcon;
+    public TextView activityMainLayersContainerListBodyInitialLayerNameLabel;
+    public ImageView activityMainLayersContainerListBodyInitialLayerSettingsIcon;
     public LinearLayout activityMainLayersContainerLayerActionsAdd;
+    public LinearLayout activityMainLayersContainerLayerActionsRemove;
     public ColorPickerView activityMainPaleteColor;
     public int visible;
     public int unvisible;
@@ -146,7 +145,10 @@ public class MainActivity extends AppCompatActivity {
         activityMainLayersContainerListBodyInitialLayer = findViewById(R.id.activity_main_layers_container_list_body_initial_layer);
 //        activityMainLayersContainerListBodyInitialLayerVisibility = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_visibility);
         activityMainLayersContainerListBodyInitialLayerVisibilityIcon = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_visibility_icon);
+        activityMainLayersContainerListBodyInitialLayerNameLabel = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_name_label);
+        activityMainLayersContainerListBodyInitialLayerSettingsIcon = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_settings_icon);
         activityMainLayersContainerLayerActionsAdd = findViewById(R.id.activity_main_layers_container_layer_actions_add);
+        activityMainLayersContainerLayerActionsRemove = findViewById(R.id.activity_main_layers_container_layer_actions_remove);
     }
 
     public void initializeToolbarMenu() {
@@ -256,6 +258,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         activityMainContainerPreFooterSaveBtn.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
                 saveImg(canvas);
@@ -354,10 +357,63 @@ public class MainActivity extends AppCompatActivity {
                 toggleLayerVisibility(activityMainLayersContainerListBodyInitialLayer);
             }
         });
+        activityMainLayersContainerListBodyInitialLayerSettingsIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflater = getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.edit_layer_name_dialog, null);
+                builder.setView(dialogView);
+                builder.setCancelable(false);
+                builder.setNegativeButton("ОТМЕНА", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                builder.setPositiveButton("ЗАДАТЬ", new DialogInterface.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        EditText editLayerNameDialogContainerField = null;
+                        editLayerNameDialogContainerField = dialogView.findViewById(R.id.edit_layer_name_dialog_container_field);
+                        CharSequence rawEditLayerNameDialogContainerFieldContent = editLayerNameDialogContainerField.getText();
+                        String editLayerNameDialogContainerFieldContent = rawEditLayerNameDialogContainerFieldContent.toString();
+
+                        LinearLayout layerContianer = (LinearLayout) view.getParent();
+                        CharSequence rawLayerNumber = layerContianer.getContentDescription();
+                        String layerNumber = rawLayerNumber.toString();
+                        int parsedLayerNumber = Integer.valueOf(layerNumber);
+                        HashMap<String, Object> layer = layers.get(parsedLayerNumber - 1);
+                        layer.put("name", editLayerNameDialogContainerFieldContent);
+                        refreshLayers();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.setTitle("");
+                alert.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        EditText editLayerNameDialogContainerField = null;
+                        editLayerNameDialogContainerField = dialogView.findViewById(R.id.edit_layer_name_dialog_container_field);
+                        LinearLayout layerContianer = (LinearLayout) view.getParent();
+                        CharSequence rawLayerNumber = layerContianer.getContentDescription();
+                        String layerNumber = rawLayerNumber.toString();
+                        int parsedLayerNumber = Integer.valueOf(layerNumber);
+                        HashMap<String, Object> layer = layers.get(0);
+                        String layerName = (String) layer.get("name");
+                        editLayerNameDialogContainerField.setText(layerName);
+                    }
+                });
+                alert.show();
+            }
+        });
         activityMainLayersContainerLayerActionsAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 HashMap<String, Object> layersItem = new HashMap<String, Object>();
+                String layerName = "Слой " + String.valueOf(layers.size() + 1);
+                layersItem.put("name", layerName);
                 layersItem.put("visibility", true);
                 layers.add(layersItem);
                 LinearLayout layer = new LinearLayout(MainActivity.this);
@@ -375,7 +431,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView layerNameLabel = new TextView(MainActivity.this);
                 int layerNumber = layers.size();
                 String rawLayerNumber = String.valueOf(layerNumber);
-                layerNameLabel.setText("Слой " + rawLayerNumber);
+                layerNameLabel.setText(layerName);
                 LinearLayout.LayoutParams layerNameLabelLayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 layerNameLabelLayoutParams.setMargins(25, 10, 25, 0);
                 layerNameLabel.setLayoutParams(layerNameLabelLayoutParams);
@@ -403,7 +459,76 @@ public class MainActivity extends AppCompatActivity {
                         toggleLayerVisibility(layer);
                     }
                 });
+                layerSettingsIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        LayoutInflater inflater = getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.edit_layer_name_dialog, null);
+                        builder.setView(dialogView);
+                        builder.setCancelable(false);
+                        builder.setNegativeButton("ОТМЕНА", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+                        builder.setPositiveButton("ЗАДАТЬ", new DialogInterface.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                EditText editLayerNameDialogContainerField = null;
+                                editLayerNameDialogContainerField = dialogView.findViewById(R.id.edit_layer_name_dialog_container_field);
+                                CharSequence rawEditLayerNameDialogContainerFieldContent = editLayerNameDialogContainerField.getText();
+                                String editLayerNameDialogContainerFieldContent = rawEditLayerNameDialogContainerFieldContent.toString();
+
+                                LinearLayout layerContianer = (LinearLayout) view.getParent();
+                                CharSequence rawLayerNumber = layerContianer.getContentDescription();
+                                String layerNumber = rawLayerNumber.toString();
+                                int parsedLayerNumber = Integer.valueOf(layerNumber);
+                                HashMap<String, Object> layer = layers.get(parsedLayerNumber - 1);
+                                layer.put("name", editLayerNameDialogContainerFieldContent);
+                                refreshLayers();
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.setTitle("");
+                        alert.setOnShowListener(new DialogInterface.OnShowListener() {
+                            @Override
+                            public void onShow(DialogInterface dialogInterface) {
+                                EditText editLayerNameDialogContainerField = null;
+                                editLayerNameDialogContainerField = dialogView.findViewById(R.id.edit_layer_name_dialog_container_field);
+                                LinearLayout layerContianer = (LinearLayout) view.getParent();
+                                CharSequence rawLayerNumber = layerContianer.getContentDescription();
+                                String layerNumber = rawLayerNumber.toString();
+                                int parsedLayerNumber = Integer.valueOf(layerNumber);
+                                HashMap<String, Object> layer = layers.get(parsedLayerNumber - 1);
+                                String layerName = (String) layer.get("name");
+                                editLayerNameDialogContainerField.setText(layerName);
+                            }
+                        });
+                        alert.show();
+                    }
+                });
                 selectLayer(layer);
+                ImageView activityMainLayersContainerLayerActionsRemoveBtn = (ImageView) activityMainLayersContainerLayerActionsRemove.getChildAt(0);
+                activityMainLayersContainerLayerActionsRemoveBtn.setColorFilter(Color.rgb(0, 0, 0));
+            }
+        });
+        activityMainLayersContainerLayerActionsRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (layers.size() >= 2) {
+                    layers.remove(currentLayer);
+                    activityMainLayersContainerLayerListBody.removeViewAt(currentLayer);
+                    currentLayer = 0;
+                    activityMainLayersContainerLayerListBody.getChildAt(0).setBackgroundColor(Color.rgb(235, 235, 235));
+                    boolean isOneLayerLeft = layers.size() <= 1;
+                    if (isOneLayerLeft) {
+                        ImageView activityMainLayersContainerLayerActionsRemoveBtn = (ImageView) activityMainLayersContainerLayerActionsRemove.getChildAt(0);
+                        activityMainLayersContainerLayerActionsRemoveBtn.setColorFilter(Color.rgb(235, 235, 235));
+                    }
+                }
             }
         });
     }
@@ -415,18 +540,24 @@ public class MainActivity extends AppCompatActivity {
         fillColor = Color.BLACK;
         layers = new ArrayList<HashMap<String, Object>>();
         HashMap<String, Object> initialLayer = new HashMap<String, Object>();
+        initialLayer.put("name", "Слой 1");
         initialLayer.put("visibility", true);
         layers.add(initialLayer);
         currentLayer = 0;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void saveImg(View view) {
         canvas.setDrawingCacheEnabled(true);
         Bitmap bitmap = canvas.getDrawingCache();
-        String rawDownloadsDir = Environment.DIRECTORY_DOWNLOADS;
-        File downloadsDir = Environment.getExternalStoragePublicDirectory(rawDownloadsDir);
-        String downloadsDirPath = downloadsDir.getPath();
-        String filename = downloadsDirPath + "/graphic_editor_export.png";
+
+        Calendar calendar = Calendar.getInstance();
+        long rawFileName = calendar.getTimeInMillis();
+        String fileName = String.valueOf(rawFileName);
+        File appDir = getDataDir();
+        String appDirPath = appDir.getPath();
+        String filename = appDirPath + "/" + fileName + ".png";
+
         try (FileOutputStream out = new FileOutputStream(filename)) {
             int canvasDpiInPercents = canvasDpi / 4;
             String toastMessage = "";
@@ -471,8 +602,6 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, Object> layer = layers.get(layerIndex);
         boolean layerVisibility = (boolean) layer.get("visibility");
         LinearLayout someLayer = (LinearLayout) view;
-//        LinearLayout someLayerVisibility = (LinearLayout) someLayer.getChildAt(0);
-//        ImageView someLayerVisibilityIcon = (ImageView) someLayerVisibility.getChildAt(0);
         ImageView someLayerVisibilityIcon = (ImageView) someLayer.getChildAt(0);
         if (layerVisibility) {
             someLayerVisibilityIcon.setColorFilter(Color.rgb(200, 200, 200));
@@ -481,6 +610,15 @@ public class MainActivity extends AppCompatActivity {
         }
         layer.put("visibility", !layerVisibility);
         canvas.invalidate();
+    }
+
+    public void refreshLayers() {
+        for (int i = 0; i < activityMainLayersContainerLayerListBody.getChildCount(); i++) {
+            String layerName = (String) layers.get(i).get("name");
+            LinearLayout layer = (LinearLayout) activityMainLayersContainerLayerListBody.getChildAt(i);
+            TextView layerNameLabel = (TextView) layer.getChildAt(2);
+            layerNameLabel.setText(layerName);
+        }
     }
 
 }
