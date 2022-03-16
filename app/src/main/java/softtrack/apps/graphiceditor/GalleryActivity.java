@@ -112,8 +112,8 @@ public class GalleryActivity extends AppCompatActivity {
                 file.addView(fileImg);
                 file.addView(fileInfo);
                 file.addView(fileSizeLabel);
-                boolean isNameAndExtDetected = rawFileName.endsWith(".png");
-                if (isNameAndExtDetected) {
+                boolean isImageDetect = rawFileName.endsWith(".png") || rawFileName.endsWith(".jpg");
+                if (isImageDetect) {
                     fileImg.setImageResource(R.drawable.shape);
                     Bitmap bitmap = BitmapFactory.decodeFile(filePath);
                     fileImg.setImageBitmap(bitmap);

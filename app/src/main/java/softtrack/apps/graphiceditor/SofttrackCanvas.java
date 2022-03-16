@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -125,10 +126,12 @@ public class SofttrackCanvas extends View {
         });*/
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+//        canvas.clipOutRect(150.0f, 150.0f, 150.0f, 150.0f);
         canvas.drawColor(MainActivity.gateway.canvasBackgroundColor);
         myCanvas = canvas;
         // для вращения канваса
@@ -149,13 +152,22 @@ public class SofttrackCanvas extends View {
                 int lineColor = (int) line.get("color");
                 int lineStrokeWidth = (int) line.get("strokeWidth");
                 int lineLayerIndex = (int) line.get("layer");
-                HashMap<String, Object> lineLayer = MainActivity.gateway.layers.get(lineLayerIndex);
-                boolean lineLayerVisibility = (boolean) lineLayer.get("visibility");
-                if (lineLayerVisibility) {
-                    Paint linePaint = new Paint();
-                    linePaint.setColor(lineColor);
-                    linePaint.setStrokeWidth(lineStrokeWidth);
-                    canvas.drawLine(lineX1, lineY1, lineX2, lineY2, linePaint);
+                if (MainActivity.gateway.layers.size() > lineLayerIndex) {
+                    HashMap<String, Object> lineLayer = MainActivity.gateway.layers.get(lineLayerIndex);
+                    boolean lineLayerVisibility = (boolean) lineLayer.get("visibility");
+                    if (lineLayerVisibility) {
+                        Paint linePaint = new Paint();
+                        linePaint.setColor(lineColor);
+                        linePaint.setStrokeWidth(lineStrokeWidth);
+                        canvas.drawLine(lineX1, lineY1, lineX2, lineY2, linePaint);
+                    }
+                } else if (MainActivity.gateway.layers.size() == lineLayerIndex){
+                    for (int someLineIndex = 0; someLineIndex < lines.size(); someLineIndex++) {
+                        if (((int)(lines.get(someLineIndex).get("layer"))) == lineLayerIndex) {
+                            lines.remove(someLineIndex);
+                        }
+                    }
+//                    lines.remove(lineLayerIndex);
                 }
             }
         }
@@ -410,6 +422,7 @@ public class SofttrackCanvas extends View {
 
                 switch (event.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
+                        MainActivity.gateway.isDetectChanges = true;
                         touchX = event.getX();
                         touchY = event.getY();
                         if (activeTool.equalsIgnoreCase("curve")) {
@@ -429,6 +442,7 @@ public class SofttrackCanvas extends View {
                         }
                         break;
                     case MotionEvent.ACTION_UP:
+                        MainActivity.gateway.isDetectChanges = true;
                         touchX = event.getX();
                         touchY = event.getY();
                         if (activeTool.equalsIgnoreCase("curve")) {
@@ -732,10 +746,13 @@ public class SofttrackCanvas extends View {
                         }
                         break;
                     case MotionEvent.ACTION_POINTER_DOWN:
+                        MainActivity.gateway.isDetectChanges = true;
                         break;
                     case MotionEvent.ACTION_POINTER_UP:
+                        MainActivity.gateway.isDetectChanges = true;
                         break;
                     case MotionEvent.ACTION_MOVE:
+                        MainActivity.gateway.isDetectChanges = true;
                         touchX = event.getX();
                         touchY = event.getY();
                         if (activeTool.equalsIgnoreCase("pen")) {
@@ -789,6 +806,33 @@ public class SofttrackCanvas extends View {
 
     public void getTransferData() {
 
+    }
+
+    public void deform(Matrix matrix) {
+        Matrix deformMatrix = new Matrix();
+        deformMatrix.setPolyToPoly(new float[] {
+        0, 0,
+        getWidth(), 0,
+        0, getHeight(),
+        getWidth(), getHeight()
+        }, 0,
+        new float[] {
+            255.0f, 0.0f,
+            850.0f, 320.0f,
+            150.0f, 1.0f,
+            1.0f, 743.0f
+        }, 0,
+        4);
+        myCanvas.setMatrix(deformMatrix);
+        // invalidate();
+    }
+
+    public void addSelectArea() {
+//        boolean selectionArea = myCanvas.clipRect(150.0f, 150.0f, 150.0f, 150.0f);
+        boolean selectionArea = myCanvas.clipRect(0.0f, 0.0f, 0.0f, 0.0f);
+        Log.d("debug", "selectionArea: " + String.valueOf(selectionArea));
+//        myCanvas.clipOutRect(150.0f, 150.0f, 150.0f, 150.0f);
+        invalidate();
     }
 
 }

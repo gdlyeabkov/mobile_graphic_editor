@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toggle_orientation_menu_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -9,6 +10,7 @@
     android:rowCount="2">
 
     <LinearLayout
+        android:id="@+id/toggle_orientation_menu_container_rotate_left"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_marginLeft="10dp"
@@ -39,6 +41,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/toggle_orientation_menu_container_rotate_right"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_marginLeft="10dp"
@@ -69,6 +72,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/toggle_orientation_menu_container_flip_horizontal"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_marginLeft="10dp"
@@ -99,6 +103,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/toggle_orientation_menu_container_reset"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_marginLeft="10dp"

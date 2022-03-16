@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/file_format_dialog_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioButton
+        android:id="@+id/file_format_dialog_container_png"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PNG" />
+
+    <RadioButton
+        android:id="@+id/file_format_dialog_container_png_transparency"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PNG (прозрачный)" />
+
+    <RadioButton
+        android:id="@+id/file_format_dialog_container_jpg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="JPG" />
+</RadioGroup>

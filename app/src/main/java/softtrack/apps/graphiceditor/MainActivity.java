@@ -12,6 +12,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +22,7 @@ import android.view.ContextMenu;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,6 +31,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     public ImageView activityMainLayersContainerListBodyInitialLayerSettingsIcon;
     public LinearLayout activityMainLayersContainerLayerActionsAdd;
     public LinearLayout activityMainLayersContainerLayerActionsRemove;
+    public LinearLayout activityMainLayersContainerLayerActionsMore;
     public ColorPickerView activityMainPaleteColor;
     public int visible;
     public int unvisible;
@@ -91,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     public int canvasBackgroundColor;
     public ArrayList<HashMap<String, Object>> layers;
     public int currentLayer;
+    public boolean isDetectChanges = false;
     public static MainActivity gateway;
 
     @Override
@@ -100,6 +107,21 @@ public class MainActivity extends AppCompatActivity {
 
         initialize();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isDetectChanges) {
+           showExitDialog();
+        } else {
+            int activityMainContainerToolbarVisibility = activityMainContainerToolbar.getVisibility();
+            boolean isToolbarVisible = activityMainContainerToolbarVisibility == visible;
+            if (isToolbarVisible) {
+                activityMainContainerToolbar.setVisibility(unvisible);
+            } else {
+                super.onBackPressed();
+            }
+        }
     }
 
     public void initialize() {
@@ -149,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         activityMainLayersContainerListBodyInitialLayerSettingsIcon = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_settings_icon);
         activityMainLayersContainerLayerActionsAdd = findViewById(R.id.activity_main_layers_container_layer_actions_add);
         activityMainLayersContainerLayerActionsRemove = findViewById(R.id.activity_main_layers_container_layer_actions_remove);
+        activityMainLayersContainerLayerActionsMore = findViewById(R.id.activity_main_layers_container_layer_actions_more);
     }
 
     public void initializeToolbarMenu() {
@@ -224,21 +247,163 @@ public class MainActivity extends AppCompatActivity {
                 activityMainContainerFooterToolBtn.setImageResource(R.drawable.text);
             }
         });
+        activityMainContainerFooterBurger.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(View view) {
+//                activityMainContainerFooterBurger.showContextMenu();
+                activityMainContainerFooterBurger.showContextMenu(0, 0);
+            }
+        });
         activityMainContainerFooterBurger.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
             @Override
             public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-                contextMenu.add(Menu.NONE, 101, Menu.NONE, "Сохранить");
-                contextMenu.add(Menu.NONE, 102, Menu.NONE, "Сохранить как");
-                contextMenu.add(Menu.NONE, 103, Menu.NONE, "Экспорт PNG / JPG файлы");
-                contextMenu.add(Menu.NONE, 104, Menu.NONE, "Настройки");
-                contextMenu.add(Menu.NONE, 105, Menu.NONE, "Справка");
-                contextMenu.add(Menu.NONE, 106, Menu.NONE, "Синхронизация");
-                contextMenu.add(Menu.NONE, 107, Menu.NONE, "аннотирование");
-                contextMenu.add(Menu.NONE, 108, Menu.NONE, "Start using the sonar pen/");
-                contextMenu.add(Menu.NONE, 109, Menu.NONE, "Калибровка гидролокатора пера");
-                contextMenu.add(Menu.NONE, 110, Menu.NONE, "Войти");
-                contextMenu.add(Menu.NONE, 111, Menu.NONE, "Выход");
+                MenuItem contextMenuItem = contextMenu.add(Menu.NONE, 101, Menu.NONE, "Сохранить");
+                contextMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        saveImg(canvas, "png");
+                        return false;
+                    }
+                });
+                contextMenuItem = contextMenu.add(Menu.NONE, 102, Menu.NONE, "Сохранить как");
+                contextMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        LayoutInflater inflater = getLayoutInflater();
+                        builder.setMessage("");
+                        builder.setCancelable(false);
+                        builder.setNegativeButton("ОТМЕНА", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
 
+                            }
+                        });
+                        builder.setPositiveButton("Сохранить локально", new DialogInterface.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                saveImg(canvas, "png");
+                            }
+                        });
+                        builder.setNeutralButton("Сохранить онлайн", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String toastMessage = "Требуется вход";
+                                Toast toast = Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.setTitle("Пункт назначения");
+                        alert.setOnShowListener(new DialogInterface.OnShowListener() {
+                            @Override
+                            public void onShow(DialogInterface dialogInterface) {
+
+                            }
+                        });
+                        alert.show();
+                        return false;
+                    }
+                });
+                contextMenuItem = contextMenu.add(Menu.NONE, 103, Menu.NONE, "Экспорт PNG / JPG файлы");
+                contextMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        LayoutInflater inflater = getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.file_format_dialog, null);
+                        builder.setView(dialogView);
+                        builder.setCancelable(false);
+                        builder.setNegativeButton("ОТМЕНА", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+                        builder.setPositiveButton("ОК", new DialogInterface.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.O)
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                RadioGroup fileFormatDialogContainer = dialogView.findViewById(R.id.file_format_dialog_container);
+                                int selectedFormatId = fileFormatDialogContainer.getCheckedRadioButtonId();
+                                String selectedFormat = "png";
+                                if (selectedFormatId == R.id.file_format_dialog_container_png) {
+                                    selectedFormat = "png";
+                                } else if (selectedFormatId == R.id.file_format_dialog_container_png_transparency) {
+                                    selectedFormat = "png";
+                                } else if (selectedFormatId == R.id.file_format_dialog_container_jpg) {
+                                    selectedFormat = "jpg";
+                                }
+                                saveImg(canvas, selectedFormat);
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.setTitle("Формат файла");
+                        alert.setOnShowListener(new DialogInterface.OnShowListener() {
+                            @Override
+                            public void onShow(DialogInterface dialogInterface) {
+
+                            }
+                        });
+                        alert.show();
+                        return false;
+                    }
+                });
+                contextMenuItem = contextMenu.add(Menu.NONE, 104, Menu.NONE, "Настройки");
+                contextMenuItem = contextMenu.add(Menu.NONE, 105, Menu.NONE, "Справка");
+                contextMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        String url = "https://medibangpaint.com/ru/android/use/";
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(url));
+                        startActivity(i);
+                        return false;
+                    }
+                });
+                contextMenuItem = contextMenu.add(Menu.NONE, 106, Menu.NONE, "Синхронизация");
+                contextMenuItem = contextMenu.add(Menu.NONE, 107, Menu.NONE, "аннотирование");
+                contextMenuItem = contextMenu.add(Menu.NONE, 108, Menu.NONE, "Start using the sonar pen/");
+                contextMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        return false;
+                    }
+                });
+                contextMenuItem = contextMenu.add(Menu.NONE, 109, Menu.NONE, "Калибровка гидролокатора пера");
+                contextMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        String url = "market://details?id=com.greenbulb.calibrate";
+                        Intent i = new Intent(Intent.ACTION_VIEW);
+                        i.setData(Uri.parse(url));
+                        startActivity(i);
+                        return false;
+                    }
+                });
+                contextMenuItem = contextMenu.add(Menu.NONE, 110, Menu.NONE, "Войти");
+                contextMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        return false;
+                    }
+                });
+                contextMenuItem = contextMenu.add(Menu.NONE, 111, Menu.NONE, "Выход");
+                contextMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        if (isDetectChanges) {
+                            showExitDialog();
+                        } else {
+                            Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                            MainActivity.this.startActivity(intent);
+                        }
+                        return false;
+                    }
+                });
             }
         });
         activityMainContainerPreFooterPen.setOnClickListener(new View.OnClickListener() {
@@ -261,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
-                saveImg(canvas);
+                saveImg(canvas, "png");
             }
         });
         activityMainContainerFooterEdit.setOnClickListener(new View.OnClickListener() {
@@ -286,6 +451,62 @@ public class MainActivity extends AppCompatActivity {
                 popupWindow.setHeight(500);
                 popupWindow.setOutsideTouchable(true);
                 popupWindow.showAsDropDown(view);
+                LinearLayout selectionMenuContainerSelectArea = layout.findViewById(R.id.selection_menu_container_select_area);
+                selectionMenuContainerSelectArea.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                        canvas.setClipBounds(new Rect(150, 150, 150, 150));
+//                        canvas.setClipBounds(new Rect(-150, -150, -150, -150));
+                        canvas.addSelectArea();
+                        popupWindow.dismiss();
+                    }
+                });
+                LinearLayout selectionMenuContainerFreeTransform = layout.findViewById(R.id.selection_menu_container_free_transform);
+                selectionMenuContainerFreeTransform.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.Q)
+                    @Override
+                    public void onClick(View view) {
+                        Matrix matrix = new Matrix();
+                        matrix.setPolyToPoly(new float[] {
+                            0, 0,
+                            canvas.getWidth(), 0,
+                            0, canvas.getHeight(),
+                            canvas.getWidth(), canvas.getHeight()
+                        }, 0,
+                        new float[] {
+                            0.0f, 0.0f,
+                            1.0f, 0.0f,
+                            0.0f, 1.0f,
+                            1.0f, 1.0f
+                        }, 0,
+                        4);
+                        canvas.deform(matrix);
+//                        matrix.setValues(new float[]{
+//                            0.0f,
+//                            0.0f,
+//                            0.5f,
+//                            0.0f,
+//                            1.0f,
+//                            0.0f,
+//                            0.0f,
+//                            0.5f,
+//                            1.0f,
+//                            0.5f,
+//                            0.0f,
+//                            1.0f,
+//                            0.5f,
+//                            1.0f,
+//                            1.0f,
+//                            1.0f
+//                        });
+//                        matrix.setSkew(5.0f, 5.0f);
+//                        matrix.setRotate(25f);
+//                        canvas.transformMatrixToGlobal(matrix);
+//                        canvas.transformMatrixToLocal(matrix);
+//                        canvas.invalidate();
+                        popupWindow.dismiss();
+                    }
+                });
             }
         });
         activityMainContainerFooterToggleOrientation.setOnClickListener(new View.OnClickListener() {
@@ -298,6 +519,43 @@ public class MainActivity extends AppCompatActivity {
                 popupWindow.setHeight(500);
                 popupWindow.setOutsideTouchable(true);
                 popupWindow.showAsDropDown(view);
+                LinearLayout toggleOrientationMenuContainerRotateLeft = layout.findViewById(R.id.toggle_orientation_menu_container_rotate_left);
+                LinearLayout toggleOrientationMenuContainerRotateRight = layout.findViewById(R.id.toggle_orientation_menu_container_rotate_right);
+                LinearLayout toggleOrientationMenuContainerFlipHorizontal = layout.findViewById(R.id.toggle_orientation_menu_container_flip_horizontal);
+                LinearLayout toggleOrientationMenuContainerReset = layout.findViewById(R.id.toggle_orientation_menu_container_reset);
+                toggleOrientationMenuContainerRotateLeft.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        float degress = canvas.getRotation();
+                        canvas.setRotation(degress - 90f);
+                        popupWindow.dismiss();
+                    }
+                });
+                toggleOrientationMenuContainerRotateRight.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        float degress = canvas.getRotation();
+                        canvas.setRotation(degress + 90f);
+                        popupWindow.dismiss();
+                    }
+                });
+                toggleOrientationMenuContainerFlipHorizontal.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        float scale = canvas.getScaleX();
+                        float reverseScale = scale * - 1.0f;
+                        canvas.setScaleX(reverseScale);
+                        popupWindow.dismiss();
+                    }
+                });
+                toggleOrientationMenuContainerReset.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        canvas.setRotation(0.0f);
+                        canvas.setScaleX(1.0f);
+                        popupWindow.dismiss();
+                    }
+                });
             }
         });
         activityMainContainerFooterTool.setOnClickListener(new View.OnClickListener() {
@@ -528,7 +786,20 @@ public class MainActivity extends AppCompatActivity {
                         ImageView activityMainLayersContainerLayerActionsRemoveBtn = (ImageView) activityMainLayersContainerLayerActionsRemove.getChildAt(0);
                         activityMainLayersContainerLayerActionsRemoveBtn.setColorFilter(Color.rgb(235, 235, 235));
                     }
+                    canvas.invalidate();
                 }
+            }
+        });
+        activityMainLayersContainerLayerActionsMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PopupWindow popupWindow = new PopupWindow(MainActivity.this);
+                View layout = getLayoutInflater().inflate(R.layout.layers_more_menu, null);
+                popupWindow.setContentView(layout);
+                popupWindow.setWidth(450);
+                popupWindow.setHeight(850);
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.showAsDropDown(view);
             }
         });
     }
@@ -547,7 +818,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void saveImg(View view) {
+    public void saveImg(View view, String format) {
         canvas.setDrawingCacheEnabled(true);
         Bitmap bitmap = canvas.getDrawingCache();
 
@@ -556,7 +827,7 @@ public class MainActivity extends AppCompatActivity {
         String fileName = String.valueOf(rawFileName);
         File appDir = getDataDir();
         String appDirPath = appDir.getPath();
-        String filename = appDirPath + "/" + fileName + ".png";
+        String filename = appDirPath + "/" + fileName + "." + format;
 
         try (FileOutputStream out = new FileOutputStream(filename)) {
             int canvasDpiInPercents = canvasDpi / 4;
@@ -564,12 +835,13 @@ public class MainActivity extends AppCompatActivity {
             boolean isDpiCorrect = canvasDpiInPercents <= 100;
             if (isDpiCorrect) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, canvasDpiInPercents, out);
-                toastMessage = "Сохранено.";
+                toastMessage = "Сохранение выполнено.";
             } else {
                 toastMessage = "Неправильно указан DPI.";
             }
             Toast toast = Toast.makeText(MainActivity.this, toastMessage, Toast.LENGTH_SHORT);
             toast.show();
+            isDetectChanges = false;
         } catch (IOException e) {
             Log.d("debug", "ошибка экспорта");
         }
@@ -619,6 +891,46 @@ public class MainActivity extends AppCompatActivity {
             TextView layerNameLabel = (TextView) layer.getChildAt(2);
             layerNameLabel.setText(layerName);
         }
+    }
+
+    public void showExitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.edit_layer_name_dialog, null);
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+        builder.setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.setPositiveButton("Сохранить", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                saveImg(canvas, "png");
+                Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
+        builder.setNeutralButton("Закрыть без сохранения", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(MainActivity.this, StartActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.setTitle("Вы закончили?");
+        alert.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+
+            }
+        });
+        alert.show();
     }
 
 }
