@@ -158,13 +158,6 @@ public class CanvasCreateActivity extends AppCompatActivity {
                                         new ColorEnvelopeListener() {
                                             @Override
                                             public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
-                                                /*
-                                                width = 1007;
-                                                height = 1414;
-                                                dpi = 350;
-                                                paperSize = "";
-                                                */
-                                                // backgroundColor = envelope.getColor();
                                             }
                                         })
                                     .setNegativeButton("Отмена",
@@ -190,9 +183,6 @@ public class CanvasCreateActivity extends AppCompatActivity {
                                             new ColorEnvelopeListener() {
                                                 @Override
                                                 public void onColorSelected(ColorEnvelope envelope, boolean fromUser) {
-                                                    /*
-                                                    backgroundColor = envelope.getColor();
-                                                    */
                                                     tempColor = envelope.getColor();
                                                 }
                                             })

@@ -165,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
         activityMainContainerFooterMaterials = findViewById(R.id.activity_main_container_footer_materials);
         activityMainLayersContainerLayerListBody = findViewById(R.id.activity_main_layers_container_list_body);
         activityMainLayersContainerListBodyInitialLayer = findViewById(R.id.activity_main_layers_container_list_body_initial_layer);
-//        activityMainLayersContainerListBodyInitialLayerVisibility = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_visibility);
         activityMainLayersContainerListBodyInitialLayerVisibilityIcon = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_visibility_icon);
         activityMainLayersContainerListBodyInitialLayerNameLabel = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_name_label);
         activityMainLayersContainerListBodyInitialLayerSettingsIcon = findViewById(R.id.activity_main_layers_container_list_body_initial_layer_settings_icon);
@@ -251,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
-//                activityMainContainerFooterBurger.showContextMenu();
                 activityMainContainerFooterBurger.showContextMenu(0, 0);
             }
         });
@@ -455,8 +453,6 @@ public class MainActivity extends AppCompatActivity {
                 selectionMenuContainerSelectArea.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        canvas.setClipBounds(new Rect(150, 150, 150, 150));
-//                        canvas.setClipBounds(new Rect(-150, -150, -150, -150));
                         canvas.addSelectArea();
                         popupWindow.dismiss();
                     }
@@ -481,29 +477,6 @@ public class MainActivity extends AppCompatActivity {
                         }, 0,
                         4);
                         canvas.deform(matrix);
-//                        matrix.setValues(new float[]{
-//                            0.0f,
-//                            0.0f,
-//                            0.5f,
-//                            0.0f,
-//                            1.0f,
-//                            0.0f,
-//                            0.0f,
-//                            0.5f,
-//                            1.0f,
-//                            0.5f,
-//                            0.0f,
-//                            1.0f,
-//                            0.5f,
-//                            1.0f,
-//                            1.0f,
-//                            1.0f
-//                        });
-//                        matrix.setSkew(5.0f, 5.0f);
-//                        matrix.setRotate(25f);
-//                        canvas.transformMatrixToGlobal(matrix);
-//                        canvas.transformMatrixToLocal(matrix);
-//                        canvas.invalidate();
                         popupWindow.dismiss();
                     }
                 });
@@ -579,9 +552,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onDrawerClosed(View drawerView) {
                         super.onDrawerClosed(drawerView);
-//                        if (drawerView.getId() == R.id.activity_main_palete) {
-                            MainActivity.gateway.fillColor = activityMainPaleteColor.getColor();
-//                        }
+                        MainActivity.gateway.fillColor = activityMainPaleteColor.getColor();
                     }
                 });
                 activityMainPaleteColor = findViewById(R.id.activity_main_palete_color);
@@ -608,7 +579,6 @@ public class MainActivity extends AppCompatActivity {
                 selectLayer(view);
             }
         });
-//        activityMainLayersContainerListBodyInitialLayerVisibility.setOnClickListener(new View.OnClickListener() {
         activityMainLayersContainerListBodyInitialLayerVisibilityIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

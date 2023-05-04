@@ -75,7 +75,6 @@ public class SofttrackCanvas extends View {
     public int outlineTextColor;
     public float[] initialCurvePoints = new float[6];
     public int initialCurvePointsCursor = -1;
-//    public GestureDetector gestureDetector;
     public ScaleGestureDetector gestureDetector;
     public Canvas myCanvas = null;
 
@@ -94,54 +93,18 @@ public class SofttrackCanvas extends View {
         if (Build.VERSION.SDK_INT >= 19) {
             gestureDetector.setQuickScaleEnabled(false);
         }
-        /*gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                if (myCanvas != null) {
-                    try {
-                        if (Math.abs(e1.getY() - e2.getY()) > 150)
-                            return false;
-                        // right to left swipe
-                        if (e1.getX() - e2.getX() > 0 && Math.abs(velocityX) > 100) {
-                            myCanvas.rotate(45);
-                            myCanvas.scale(0.1f, 0.1f);
-                            myCanvas.translate(5.0f, 5.0f);
-                        } else if (e2.getX() - e1.getX() > 0 && Math.abs(velocityX) > 100) {
-                            myCanvas.rotate(135);
-                            myCanvas.scale(0.1f, 0.1f);
-                            myCanvas.translate(5.0f, 5.0f);
-                        }
-                    } catch (Exception e) {
-                        // nothing
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onDown(MotionEvent e) {
-                myCanvas.rotate(45);
-                return true;
-            }
-        });*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-//        canvas.clipOutRect(150.0f, 150.0f, 150.0f, 150.0f);
         canvas.drawColor(MainActivity.gateway.canvasBackgroundColor);
         myCanvas = canvas;
-        // для вращения канваса
-        //        canvas.rotate(15);
-
         boolean isLinesExists = lines != null;
         if (isLinesExists) {
             ColorPickerView activityMainPaleteColor = MainActivity.gateway.findViewById(R.id.activity_main_palete_color);
             int activeColor = activityMainPaleteColor.getColor();
-//            paint.setColor(Color.BLUE);
             paint.setColor(activeColor);
             for (int lineIndex = 0; lineIndex < lines.size(); lineIndex++) {
                 HashMap line = lines.get(lineIndex);
@@ -167,7 +130,6 @@ public class SofttrackCanvas extends View {
                             lines.remove(someLineIndex);
                         }
                     }
-//                    lines.remove(lineLayerIndex);
                 }
             }
         }
@@ -298,14 +260,9 @@ public class SofttrackCanvas extends View {
                 int textFillColor = (int) text.get("fillTextColor");
                 int textOutlineColor = (int) text.get("outlineTextColor");
 
-                // boolean isFontFamily = (boolean) text.get("isFontFamily");
-
                 Paint textPaint = new Paint();
 
                 String fontFamily = (String) text.get("fontFamily");
-                if (fontFamily.length() >= 1) {
-
-                }
 
                 textPaint.setColor(Color.BLACK);
                 textPaint.setTextSize(fontSize);
@@ -326,9 +283,6 @@ public class SofttrackCanvas extends View {
                 } else {
                     textPaint.setColor(textFillColor);
                 }
-                /*if (isFontFamily) {
-                    Typeface.defaultFromStyle(Typeface.ITALIC);
-                }*/
                 canvas.drawText(textContent, textX, textY, textPaint);
             }
         }
@@ -364,7 +318,6 @@ public class SofttrackCanvas extends View {
                 ColorPickerView activityMainPaleteColor = MainActivity.gateway.findViewById(R.id.activity_main_palete_color);
                 paint.setColor(activityMainPaleteColor.getColor());
                  if (MainActivity.gateway.activeToolbarMenuItem == "rect") {
-//                    canvas.drawRect(initialTouchX, initialTouchY, touchX, touchY, paint);
                      canvas.drawRoundRect(initialTouchX, initialTouchY, touchX, touchY, MainActivity.gateway.roundRadius, MainActivity.gateway.roundRadius, paint);
                  } else if (MainActivity.gateway.activeToolbarMenuItem == "oval") {
                     canvas.drawOval(initialTouchX, initialTouchY, touchX, touchY, paint);
@@ -383,7 +336,6 @@ public class SofttrackCanvas extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-//        return super.onTouchEvent(event);
         super.onTouchEvent(event);
         return true;
     }
@@ -391,7 +343,6 @@ public class SofttrackCanvas extends View {
     public void initialize(MainActivity context) {
         initializeConstants();
         addHandlers();
-//        getTransferData();
     }
 
     public void initializeConstants() {
@@ -558,7 +509,6 @@ public class SofttrackCanvas extends View {
 
                                     String fontFamily = (String) drawTextDialogContainerFontFamily.getSelectedItem();
                                      text.put("fontFamily", fontFamily);
-                                    // text.put("isFontFamily", false);
 
                                     text.put("isTextOutlineSmooth", isTextOutlineSmooth);
                                     text.put("fillTextColor", fillTextColor);
@@ -776,7 +726,6 @@ public class SofttrackCanvas extends View {
                             line.put("x2", touchX + 10);
                             line.put("y2", touchY + 10);
                             line.put("color", Color.WHITE);
-//                            line.put("color", MainActivity.gateway.fillColor);
                             line.put("strokeWidth", 50);
                             lines.add(line);
                             invalidate();
@@ -824,14 +773,11 @@ public class SofttrackCanvas extends View {
         }, 0,
         4);
         myCanvas.setMatrix(deformMatrix);
-        // invalidate();
     }
 
     public void addSelectArea() {
-//        boolean selectionArea = myCanvas.clipRect(150.0f, 150.0f, 150.0f, 150.0f);
         boolean selectionArea = myCanvas.clipRect(0.0f, 0.0f, 0.0f, 0.0f);
         Log.d("debug", "selectionArea: " + String.valueOf(selectionArea));
-//        myCanvas.clipOutRect(150.0f, 150.0f, 150.0f, 150.0f);
         invalidate();
     }
 

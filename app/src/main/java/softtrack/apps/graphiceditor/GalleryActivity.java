@@ -11,7 +11,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-//import android.widget.GridLayout;
 import androidx.appcompat.app.ActionBar;
 import androidx.gridlayout.widget.GridLayout;
 import android.widget.ImageView;

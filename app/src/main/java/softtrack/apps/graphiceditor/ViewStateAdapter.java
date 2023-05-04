@@ -15,7 +15,6 @@ public class ViewStateAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        // Hardcoded in this order, you'll want to use lists and make sure the titles match
         if (position == 0) {
             return new ToolbarPenMenuFragment();
         } else if (position == 1) {
