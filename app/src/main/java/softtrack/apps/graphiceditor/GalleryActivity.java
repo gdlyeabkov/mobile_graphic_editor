@@ -20,7 +20,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.window.layout.FoldingFeature;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
